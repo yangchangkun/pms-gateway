@@ -1,0 +1,30 @@
+package com.pms.rules.workflow.cc
+
+import com.pms.drools.domain.WorkflowCcBean;
+
+/*
+* 人事审批-离职交接-抄送规则
+*/
+rule "hr_leave_handover_cc_drools_1"
+    no-loop true
+    lock-on-active true
+    salience 200
+    when
+        $workflowCc : WorkflowCcBean(businessType == "hr_leave_handover" && (account == "yuanxingyu" || account == "wuxiaoming" || account == "shenqi" || account == "wengguohai" || account == "yaoxianyou" || account == "mayingchun" || account == "zhengchengbin"))
+    then
+        System.out.println("hr_leave_handover_cc_drools_1 命中");
+        $workflowCc.setCcAccounts("wuxiaoming,gaoleiming,chenxiyao,heyanchan,wengguohai,huajianhe");
+end
+
+rule "hr_leave_handover_cc_drools_2"
+    no-loop true
+    lock-on-active true
+    salience 0
+    when
+        $workflowCc : WorkflowCcBean(businessType == "hr_leave_handover" && (account != "yuanxingyu" && account != "wuxiaoming" && account != "shenqi" && account != "wengguohai" && account != "yaoxianyou" && account != "mayingchun" && account != "zhengchengbin"))
+    then
+        System.out.println("hr_leave_handover_cc_drools_2 命中");
+        $workflowCc.setCcAccounts("wuxiaoming,gaoleiming,chenxiyao,heyanchan,wengguohai");
+        $workflowCc.setCcRoleCodes("pm,pd,dm");
+end
+

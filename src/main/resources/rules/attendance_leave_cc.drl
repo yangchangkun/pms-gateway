@@ -1,0 +1,41 @@
+package com.pms.rules.workflow.cc
+
+import com.pms.drools.domain.WorkflowCcBean;
+
+/*
+* 考勤审批-请假-抄送规则
+*/
+rule "attendance_leave_cc_drools_1"
+    no-loop true
+    lock-on-active true
+    salience 300
+    when
+        $workflowCc : WorkflowCcBean(businessType == "attendance_leave" && (account == "wengguohai" || account == "yaoxianyou" || account == "mayingchun" || account == "zhengchengbin" || account == "yuanxingyu" || account == "wuxiaoming" || account == "shenqi"))
+    then
+        System.out.println("attendance_leave_cc_drools_1 命中");
+        $workflowCc.setCcAccounts("gaoleiming,heyanchan,wengguohai,huajianhe,wuxiaoming");
+end
+
+rule "attendance_leave_cc_drools_2"
+    no-loop true
+    lock-on-active true
+    salience 200
+    when
+        $workflowCc : WorkflowCcBean(businessType == "attendance_leave" && days>=3 && (account != "yuanxingyu" && account != "wuxiaoming" && account != "shenqi" && account != "wengguohai" && account != "yaoxianyou" && account != "mayingchun" && account != "zhengchengbin"))
+    then
+        System.out.println("attendance_leave_cc_drools_2 命中");
+        $workflowCc.setCcAccounts("gaoleiming,heyanchan,wuxiaoming");
+        $workflowCc.setCcRoleCodes("pm,pd,dm");
+end
+
+rule "attendance_leave_cc_drools_3"
+    no-loop true
+    lock-on-active true
+    salience 0
+    when
+        $workflowCc : WorkflowCcBean(businessType == "attendance_leave" && days<3 && (account != "yuanxingyu" && account != "wuxiaoming" && account != "shenqi" && account != "wengguohai" && account != "yaoxianyou" && account != "mayingchun" && account != "zhengchengbin"))
+    then
+        System.out.println("attendance_leave_cc_drools_3 命中");
+        $workflowCc.setCcAccounts("wuxiaoming");
+        $workflowCc.setCcRoleCodes("pm,pd,dm");
+end

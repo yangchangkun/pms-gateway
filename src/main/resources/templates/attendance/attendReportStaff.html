@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+    <!-- 相对上面的设置，该配置可禁止页面被手势放大和缩小 -->
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover"  />
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+
+    <meta name='apple-mobile-web-app-capable' content='yes' />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <meta name='full-screen' content='true' />
+    <meta name='x5-fullscreen' content='true' />
+    <meta name='360-fullscreen' content='true' />
+
+    <title>数字化管理平台</title>
+
+    <meta name="keywords" content="数字化 管理平台">
+    <meta name="description" content="数字化 管理平台">
+
+    <script src="../js/common/includeCommonCss.js"></script>
+    <!-- 腾讯地图定位组件 -->
+    <script type="text/javascript" src="https://3gimg.qq.com/lightmap/components/geolocation/geolocation.min.js"></script>
+
+    <style>
+        body {
+            /*
+            * 注意，container_content 如果不自适应，则body需要内补一个边距，边距=container_footer的高度
+             */
+            /*padding-top: 46px;*/
+            padding-top: 15px;
+        }
+
+
+    </style>
+</head>
+<body class="gray-bg">
+<div id="vueApp" class="container-fluid" v-cloak>
+    <!-- 固定头部 begin -->
+    <!--<div class="navbar-fixed-top">
+        <div class="row bg-primary">
+            <div class="col-xs-2">
+                <a class="btn btn-lg btn-trans btn-block  show" onclick="onBackClick();"><i class="fa fa-chevron-left"></i></a>
+            </div>
+            <div class="col-xs-8 text-center">
+                <span class="header-title">{{userEntity.userName}}考勤统计</span>
+            </div>
+            <div class="col-xs-2">
+                <a class="btn btn-lg btn-trans btn-block  hidden" ><i class="fa fa-chevron-right"></i></a>
+            </div>
+        </div>
+    </div>-->
+    <!-- 固定头部 end -->
+
+    <div class="row">
+        <div class="col-xs-3">
+            <a class="btn btn-info btn-block" @click="preMonth();"><i class="fa fa-caret-left"></i>&nbsp;</a>
+        </div>
+        <div class="col-xs-6 text-center">
+            <h4>{{year}}-{{month}}</h4>
+        </div>
+        <div class="col-xs-3">
+            <a class="btn btn-info btn-block" @click="nextMonth();">&nbsp;<i class="fa fa-caret-right"></i></a>
+        </div>
+    </div>
+
+
+    <div class="row" style="margin-top: 15px;">
+        <div class="col-xs-12">
+            <ul class="list-group white-bg">
+                <li class="list-group-item">
+                    <span> 职工姓名 <span class="pull-right"> {{userEntity.userName}} </span></span>
+                </li>
+            </ul>
+
+            <ul class="list-group white-bg">
+                <li class="list-group-item">
+                    <span> 应出勤天数 <span class="pull-right"> {{shouldDays}} </span></span>
+                </li>
+                <li class="list-group-item">
+                    <span> 实出勤天数 <span class="pull-right"> {{actualDays}} </span></span>
+                </li>
+            </ul>
+
+            <ul class="list-group white-bg" style="margin-top: 15px;">
+                <li class="list-group-item">
+                    <span> 缺卡次数 <span class="pull-right"> {{qkCount}} </span></span>
+                </li>
+                <li class="list-group-item">
+                    <span> 缺勤次数 <span class="pull-right"> {{qqCount}} </span></span>
+                </li>
+                <li class="list-group-item">
+                    <span> 迟到次数 <span class="pull-right"> {{cdCount}} </span></span>
+                </li>
+                <li class="list-group-item">
+                    <span> 早退次数 <span class="pull-right"> {{ztCount}} </span></span>
+                </li>
+                <li class="list-group-item">
+                    <span> 旷工次数 <span class="pull-right"> {{kgCount}} </span></span>
+                </li>
+            </ul>
+
+            <ul class="list-group white-bg" style="margin-top: 15px;">
+                <li class="list-group-item">
+                    <span> 外出时长 <span class="pull-right"> {{egressHours}}(小时) </span></span>
+                </li>
+                <li class="list-group-item">
+                    <span> 出差天数 <span class="pull-right"> {{travelDays}}(天) </span></span>
+                </li>
+                <li class="list-group-item">
+                    <span> 请假天数 <span class="pull-right"> {{leaveDays}}(天) </span></span>
+                </li>
+                <!--<li class="list-group-item">
+                    <span> 加班时间 <span class="pull-right"> {{overtimeHours}}(小时) </span></span>
+                </li>-->
+                <li class="list-group-item">
+                    <span> 补卡次数 <span class="pull-right"> {{bkCount}}(次) </span></span>
+                </li>
+            </ul>
+
+            <div v-for="(obj, index) in attendSnapshotList">
+                <div :class="obj.diffDay<0?'panel panel-default':(obj.dayType=='0'?'panel panel-success':'panel panel-info')">
+                    <div class="panel-heading">
+                        {{obj.day}}&nbsp;
+                        <span v-if="obj.dayType=='0'">[节假日]</span>
+                        <span v-if="obj.dayType=='1'">[工作日]</span>
+                        <span class="badge pull-right">{{obj.workHours}}</span>
+                    </div>
+                    <div class="panel-body">
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <h5 class="pull-left">
+                                    <i class="fa fa-clock-o"></i>&nbsp;上班&nbsp;<strong>{{obj.inTime}}</strong>&nbsp;
+                                    <span class="label label-warning" v-if="obj.inLabel=='缺卡'">{{obj.inLabel}}</span>
+                                    <span class="label label-warning" v-else-if="obj.inLabel=='迟到'">{{obj.inLabel}}</span>
+                                    <span class="label label-danger" v-else-if="obj.inLabel=='旷工'">{{obj.inLabel}}</span>
+                                    <span class="label label-success" v-else>{{obj.inLabel}}</span>
+                                </h5>
+                                <h5 class="pull-right">
+                                <span v-for="(tag,index) in obj.inTag.split(',')">
+                                    <span class="label label-warning" style="margin-left: 5px;" v-if="tag=='请假'">请假</span>
+                                    <span class="label label-warning" style="margin-left: 5px;" v-else-if="tag=='外出'">外出</span>
+                                    <span class="label label-primary" style="margin-left: 5px;" v-else-if="tag=='出差'">出差</span>
+                                    <span class="label label-primary" style="margin-left: 5px;" v-else-if="tag=='加班'">加班</span>
+                                    <span class="label label-danger" style="margin-left: 5px;" v-else-if="tag=='外勤'">外勤</span>
+                                    <span class="label label-success" style="margin-left: 5px;" v-else>{{tag}}</span>
+                                </span>
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <h5 class="pull-left">
+                                    <i class="fa fa-clock-o"></i>&nbsp;下班&nbsp;<strong>{{obj.outTime}}</strong>&nbsp;
+                                    <span class="label label-warning" v-if="obj.outLabel=='缺卡'">{{obj.outLabel}}</span>
+                                    <span class="label label-warning" v-else-if="obj.outLabel=='缺勤'">{{obj.outLabel}}</span>
+                                    <span class="label label-warning" v-else-if="obj.outLabel=='早退'">{{obj.outLabel}}</span>
+                                    <span class="label label-danger" v-else-if="obj.outLabel=='旷工'">{{obj.outLabel}}</span>
+                                    <span class="label label-success" v-else>{{obj.outLabel}}</span>
+                                </h5>
+                                <h5 class="pull-right">
+                                <span v-for="(tag,index) in obj.outTag.split(',')">
+                                    <span class="label label-warning" style="margin-left: 5px;" v-if="tag=='请假'">请假</span>
+                                    <span class="label label-warning" style="margin-left: 5px;" v-else-if="tag=='外出'">外出</span>
+                                    <span class="label label-primary" style="margin-left: 5px;" v-else-if="tag=='出差'">出差</span>
+                                    <span class="label label-primary" style="margin-left: 5px;" v-else-if="tag=='加班'">加班</span>
+                                    <span class="label label-danger" style="margin-left: 5px;" v-else-if="tag=='外勤'">外勤</span>
+                                    <span class="label label-success" style="margin-left: 5px;" v-else>{{tag}}</span>
+                                </span>
+                                </h5>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="panel-footer" v-if="obj.diffDay>=0 && obj.dayType=='1'">
+                        <a role="button" data-toggle="collapse" data-parent="#accordion" :href="'#collapse'+index" aria-expanded="true" :aria-controls="'collapse'+index">
+                            查看打卡地点详情>>
+                        </a>
+                        <div class="collapse" :id="'collapse'+index" style="margin-top: 15px;">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <p><strong>上班地点:</strong>{{obj.inAddr}}</p>
+                                    <p><strong>下班地点:</strong>{{obj.outAddr}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+
+
+<script src="../js/common/includeCommonScript.js"></script>
+
+
+<script>document.write('<script src="../js/modules/attendance/attendReportStaff.js?t=' + globalJsVer + '"><\/script>')</script>
+
+<script>
+    $(function () {
+
+    });
+
+</script>
+
+</body>
+</html>

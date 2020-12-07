@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+    <!-- 相对上面的设置，该配置可禁止页面被手势放大和缩小 -->
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover"  />
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+
+    <meta name='apple-mobile-web-app-capable' content='yes' />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <meta name='full-screen' content='true' />
+    <meta name='x5-fullscreen' content='true' />
+    <meta name='360-fullscreen' content='true' />
+
+    <title>数字化管理平台</title>
+
+    <meta name="keywords" content="数字化 管理平台">
+    <meta name="description" content="数字化 管理平台">
+
+    <script src="../js/common/includeCommonCss.js"></script>
+
+    <style>
+        body {
+            /*
+            * 注意，container_content 如果不自适应，则body需要内补一个边距，边距=container_footer的高度
+             */
+            padding-top: 46px;
+        }
+
+
+    </style>
+</head>
+<body class="gray-bg">
+<div id="vueApp" class="container-fluid" v-cloak>
+    <!-- 固定头部 begin -->
+    <div class="navbar-fixed-top">
+        <div class="row bg-primary">
+            <div class="col-xs-3">
+                <a class="btn btn-lg btn-trans btn-block  show" onclick="onBackClick();"><i class="fa fa-chevron-left"></i></a>
+            </div>
+            <div class="col-xs-6 text-center">
+                <span class="header-title">项目详情</span>
+            </div>
+            <div class="col-xs-2">
+                <a class="btn btn-lg btn-trans btn-block  hidden" ><i class="fa fa-chevron-right"></i></a>
+            </div>
+        </div>
+    </div>
+    <!-- 固定头部 end -->
+
+
+    <div class="row" style="margin-top: 15px;">
+        <div class="col-xs-12" style="padding: 0px;">
+            <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs" style="padding-left: 15px;padding-right: 15px;">
+                    <li role="presentation" class="active"><a href="#proHome" data-toggle="tab">项目基本信息</a></li>
+                    <li role="presentation"><a href="#proExpand" data-toggle="tab">项目基本资料</a></li>
+                    <!--<li role="presentation"><a href="#proPact" data-toggle="tab">项目合同资料</a></li>-->
+                    <li role="presentation"><a href="#proTeams" data-toggle="tab">项目组成员</a></li>
+                    <li role="presentation"><a href="#proWbs" data-toggle="tab">项目节点信息</a></li>
+                    <li role="presentation"><a href="#proChanges" data-toggle="tab">项目变更信息</a></li>
+                    <li role="presentation"><a href="#proAttachment" data-toggle="tab">项目附件</a></li>
+                </ul>
+            </div>
+            <div class="tab-content" style="padding: 10px;">
+
+                <!-- 项目基本信息begin-->
+                <div class="tab-pane active" id="proHome">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">项目编号</label>
+                                <input type="text" class="form-control"　v-model="proBase.proSerial" placeholder="项目编号" readonly="true">
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">项目名称</label>
+                                <input type="text" class="form-control"　v-model="proBase.proName" placeholder="项目名称" readonly="true">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">项目金额&nbsp;&nbsp;&nbsp;&nbsp;({{proBase.proAmount|priceCvr}})</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">￥</span>
+                                    <input type="text" class="form-control"　v-model="proBase.proAmount" placeholder="项目金额" readonly="true">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">对方公司</label>
+                                <input type="text" class="form-control"　v-model="proBase.proCompany" placeholder="对方公司" readonly="true">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">部门经理</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                    <input type="text" class="form-control" v-model="proBase.proLeadName" placeholder="部门经理" readonly="true">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">项目类型</label>
+                                <select class="form-control" v-model="proBase.proType" disabled>
+                                    <option value="0">内部项目</option>
+                                    <option value="1">外部项目</option>
+                                    <option value="2">研发项目</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">项目主导部门</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-bank"></i></span>
+                                    <input type="text" class="form-control" v-model="proBase.proDepartName" placeholder="项目主导部门" readonly="true">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">项目类别</label>
+                                <select class="form-control"　v-model="proBase.proCategory" disabled>
+                                    <option value="1">信用卡</option>
+                                    <option value="2">智能零售</option>
+                                    <option value="3">大数据</option>
+                                    <option value="4">其它</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">项目经理</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                    <input type="text" class="form-control" v-model="proBase.proManagerName" placeholder="请选择项目经理" readonly="true">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="form-group" v-if="proBase.proType==1">
+                                <label class="control-label">外部项目方式</label>
+                                <select class="form-control"　v-model="proBase.proAttribute" disabled>
+                                    <option value="1">集成项目</option>
+                                    <option value="2">服务项目</option>
+                                    <option value="3">运营项目</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="form-group" v-if="proBase.proType==0">
+                                <label class="control-label">内部项目方式</label>
+                                <select class="form-control" v-model="proBase.interProApproach" disabled>
+                                    <option value="1">销售售前项目</option>
+                                    <option value="2">内部管理项目</option>
+                                    <option value="3">内部支撑项目</option>
+                                    <option value="4">其他</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">项目总监</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                    <input type="text" class="form-control" v-model="proBase.proChiefName" placeholder="项目总监" readonly="true">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="form-group" v-if="proBase.proType==1">
+                                <label class="control-label">合同编号</label>
+                                <input type="text" class="form-control"　v-model="proBase.pactSerial" placeholder="合同编号" readonly="true">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label class="control-label">项目描述</label>
+                                <textarea class="form-control" rows="3" v-model="proBase.proDescribe" placeholder="项目描述" readonly="true"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">立项人</label>
+                                <input type="text" class="form-control" id="createUserName" name="createUserName" v-model="proBase.createUserName" placeholder="立项人" readonly="true">
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">立项日期</label>
+                                <input type="text" class="form-control" id="proDay" name="proDay" v-model="proBase.proDay" placeholder="立项日期" readonly="true">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">项目预算&nbsp;&nbsp;&nbsp;&nbsp;({{proBase.proDudget|priceCvr}})</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">￥</span>
+                                    <input type="number" class="form-control" id="proDudget" name="proDudget" v-model="proBase.proDudget" placeholder="项目预算" maxlength="9" readonly="true">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">项目状态</label>
+                                <select class="form-control"　v-model="proBase.proLifeCycle" disabled>
+                                    <option value="0">已立项</option>
+                                    <option value="1">已指派</option>
+                                    <option value="2">已领取</option>
+                                    <option value="3">执行中</option>
+                                    <option value="4">已完成</option>
+                                    <option value="5">已终止</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">项目周期(自)</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input type="text" class="form-control" id="proCreateDay" name="proCreateDay" v-model="proBase.proCreateDay" readonly="readonly" placeholder="请选择项目周期(自)" disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">项目周期(至)</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input type="text" class="form-control" id="proEndDay" name="proEndDay" v-model="proBase.proEndDay" readonly="readonly" placeholder="请选择项目周期(至)" disabled/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 10px;">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label class="control-label">项目总结</label>
+                                <textarea class="form-control" rows="3" v-model="proBase.conclusion" placeholder="项目总结" readonly="true"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 项目基本信息end-->
+
+                <!--项目基本资料bengin-->
+                <div class="tab-pane" id="proExpand">
+                    <!-- 项目拓展信息布局begin-->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label class="control-label">立项目的</label>
+                                <textarea class="form-control" rows="3" v-model="proBase.proExpand.proPurpose" placeholder="立项目的" maxlength="4000" readonly="true"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label class="control-label">项目用途</label>
+                                <textarea class="form-control" rows="3" v-model="proBase.proExpand.proUse" placeholder="项目用途" maxlength="4000" readonly="true"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label class="control-label">项目意义</label>
+                                <textarea class="form-control" rows="3" v-model="proBase.proExpand.proMeaning" placeholder="项目意义" maxlength="4000" readonly="true"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label class="control-label">项目范围</label>
+                                <textarea class="form-control" rows="3" v-model="proBase.proExpand.proScope" placeholder="项目范围" maxlength="4000" readonly="true"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label class="control-label">项目目标</label>
+                                <textarea class="form-control" rows="3" v-model="proBase.proExpand.proObjective" placeholder="项目目标" maxlength="4000" readonly="true"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label class="control-label">项目背景资料</label>
+                                <textarea class="form-control" rows="3" v-model="proBase.proExpand.proBackground" placeholder="项目背景资料" maxlength="4000" readonly="true"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label class="control-label">项目现状分析</label>
+                                <textarea class="form-control" rows="3" v-model="proBase.proExpand.proActuality" placeholder="项目现状分析" maxlength="4000" readonly="true"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label class="control-label">竞品分析</label>
+                                <textarea class="form-control" rows="3" v-model="proBase.proExpand.proCompete" placeholder="竞品分析" maxlength="4000" readonly="true"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label class="control-label">竞争对手分析</label>
+                                <textarea class="form-control" rows="3" v-model="proBase.proExpand.proRival" placeholder="竞争对手分析" maxlength="4000" readonly="true"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label class="control-label">版权和专利分析</label>
+                                <textarea class="form-control" rows="3" v-model="proBase.proExpand.proCopyright" placeholder="版权和专利分析" maxlength="4000" readonly="true"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label class="control-label">技术可行性分析</label>
+                                <textarea class="form-control" rows="3" v-model="proBase.proExpand.proFeasibility" placeholder="技术可行性分析" maxlength="4000" readonly="true"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label class="control-label">技术路线</label>
+                                <textarea class="form-control" rows="3" v-model="proBase.proExpand.proRoute" placeholder="技术路线" maxlength="4000" readonly="true"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label class="control-label">实施方案</label>
+                                <textarea class="form-control" rows="3" v-model="proBase.proExpand.proImplement" placeholder="实施方案" maxlength="4000" readonly="true"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label class="control-label">项目外购清单</label>
+                                <textarea class="form-control" rows="3" v-model="proBase.proExpand.proBuyList" placeholder="项目外购清单" maxlength="4000" readonly="true"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">项目软件购置费&nbsp;&nbsp;&nbsp;&nbsp;({{proBase.proExpand.proExpensesSoft|priceCvr}})</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">￥</span>
+                                    <input type="number" class="form-control" v-model="proBase.proExpand.proExpensesSoft" placeholder="项目软件购置费" readonly="true">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">项目硬件购置费&nbsp;&nbsp;&nbsp;&nbsp;({{proBase.proExpand.proExpensesHardware|priceCvr}})</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">￥</span>
+                                    <input type="number" class="form-control" v-model="proBase.proExpand.proExpensesHardware" placeholder="项目硬件购置费" readonly="true">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">培训费&nbsp;&nbsp;&nbsp;&nbsp;({{proBase.proExpand.proExpensesCultivate|priceCvr}})</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">￥</span>
+                                    <input type="number" class="form-control" v-model="proBase.proExpand.proExpensesCultivate" placeholder="培训费" readonly="true">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-4">
+                        </div>
+                        <div class="col-xs-2"></div>
+                    </div>
+                    <!-- 项目拓展信息布局end-->
+                </div>
+                <!--项目基本资料end-->
+
+                <!-- 项目成员begin-->
+                <div class="tab-pane" id="proTeams">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                <tr>
+                                    <th>用户名称</th>
+                                    <th>类型</th>
+                                    <th>参与周期(自)</th>
+                                    <th>参与周期(至)</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="(obj, index) in teamsDatas">
+                                    <td :title="obj.username">{{obj.username}}</td>
+                                    <td>
+                                        <span class="label label-danger" v-show="obj.userType==0">职能领导</span>
+                                        <span class="label label-success" v-if="obj.userType==1" >项目经理</span>
+                                        <span class="label label-info" v-if="obj.userType==2" >项目成员</span>
+                                    </td>
+                                    <td>{{obj.joinDate}}</td>
+                                    <td>{{obj.departureDate}}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- 项目成员end-->
+
+                <!-- 项目关键节点begin-->
+                <div class="tab-pane" id="proWbs">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                <tr>
+                                    <th rowspan="2">节点名称</th>
+                                    <th rowspan="2">节点类型</th>
+                                    <th colspan="2">开始日期</th>
+                                    <th colspan="2">结束日期</th>
+                                    <th rowspan="2">状态</th>
+                                </tr>
+                                <tr>
+                                    <th>计划</th>
+                                    <th>实际</th>
+                                    <th>计划</th>
+                                    <th>实际</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="(obj, index) in wbsDatas">
+                                    <td>{{obj.proWbsName}}</td>
+                                    <td>
+                                        <span class="label label-success" v-if="obj.proWbsType==0" >普通节点</span>
+                                        <span class="label label-danger" v-show="obj.proWbsType==1">里程碑</span>
+                                    </td>
+                                    <td>{{obj.proExpectStartData}}</td>
+                                    <td>{{obj.proActualStartDate}}</td>
+                                    <td>{{obj.proExpectEndData}}</td>
+                                    <td>{{obj.proActualEndDate}}</td>
+                                    <td>
+                                        <span class="label label-info" v-if="obj.proWbsState==0" >正常</span>
+                                        <span class="label label-success" v-show="obj.proWbsState==1">提前</span>
+                                        <span class="label label-danger" v-show="obj.proWbsState==2">延期</span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- 项目关键节点end-->
+
+                <!-- 项目变更信息begin-->
+                <div class="tab-pane" id="proChanges" style="overflow-x: auto">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                <tr>
+                                    <th>变更类型</th>
+                                    <th>变更人</th>
+                                    <th>审批人</th>
+                                    <th>变更时间</th>
+                                    <th>审核状态</th>
+                                    <th>审核意见</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="(obj, index) in changesDatas">
+                                    <td>
+                                        <span class="label label-success" v-show="obj.type==0">项目立项</span>
+                                        <span class="label label-success" v-show="obj.type==1" >追加项目预算</span>
+                                        <span class="label label-success" v-show="obj.type==2" >缩减项目预算</span>
+                                        <span class="label label-success" v-show="obj.type==3">变更部门经理</span>
+                                        <span class="label label-success" v-show="obj.type==4" >变更项目经理</span>
+                                        <span class="label label-success" v-show="obj.type==5" >增加项目成员</span>
+                                        <span class="label label-success" v-show="obj.type==6">撤离项目组员</span>
+                                        <span class="label label-success" v-show="obj.type==7" >变更项目周期</span>
+                                        <span class="label label-success" v-show="obj.type==8" >项目完成报告</span>
+                                        <span class="label label-danger" v-show="obj.type==9" >撤销项目</span>
+                                        <span class="label label-success" v-show="obj.type==10" >项目预算变更</span>
+                                    </td>
+                                    <td>{{obj.username}}</td>
+                                    <td>{{obj.approalName}}</td>
+                                    <td>{{obj.createTime}}</td>
+                                    <td>
+                                        <span class="label label-info" v-show="obj.status==0">审核中</span>
+                                        <span class="label label-danger" v-if="obj.status==1" >驳回</span>
+                                        <span class="label label-success" v-if="obj.status==2" >已办结</span>
+                                    </td>
+                                    <td>{{obj.reason}}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- 项目变更信息end-->
+
+                <!--项目附件begin-->
+                <div class="tab-pane" id="proAttachment">
+                    <!-- 项目附件布局begin-->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <!-- 文件上传begin-->
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                <tr>
+                                    <th style="width: 20%;">
+                                        附件名称
+                                    </th>
+                                    <th style="width: 20%;">
+                                        描述
+                                    </th>
+                                    <th  style="width: 20%;">
+                                        创建人
+                                    </th>
+                                    <th  style="width: 30%;">
+                                        创建时间
+                                    </th>
+                                    <th style="width: 10%;">
+                                        <a href="javascript:void(0);" class="btn btn-default btn-sm" id="upload">
+                                            <i class="fa fa-plus"></i>
+                                        </a>
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="(obj, index) in proAttachmentDatas">
+                                    <td>
+                                        {{obj.name}}
+                                    </td>
+                                    <td>
+                                        {{obj.description}}
+                                    </td>
+                                    <td>
+                                        {{obj.createUserName}}
+                                    </td>
+                                    <td>
+                                        {{obj.createTime}}
+                                    </td>
+                                    <td>
+                                        <a href="javascript:void(0);" @click="downloadAttachment(obj.filePath, obj.fileName)" class="btn btn-default btn-sm">
+                                            <i class="fa fa-arrow-circle-down"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <!-- 文件上传end-->
+                        </div>
+                    </div>
+                    <!-- 项目附件布局end-->
+                </div>
+                <!--项目附件end-->
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+<script src="../js/common/includeCommonScript.js"></script>
+
+<script>document.write('<script src="../js/modules/project/projectDetail.js?t=' + globalJsVer + '"><\/script>')</script>
+
+<script>
+    $(function () {
+
+    });
+
+</script>
+
+</body>
+</html>

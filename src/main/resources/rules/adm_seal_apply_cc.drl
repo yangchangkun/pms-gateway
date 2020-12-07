@@ -1,0 +1,19 @@
+package com.pms.rules.workflow.cc
+
+import com.pms.drools.domain.WorkflowCcBean;
+
+/*
+* 人事审批-印章申请-抄送规则
+*/
+rule "adm_seal_apply_cc_drools_1"
+    no-loop true
+    lock-on-active true
+    salience 0
+    when
+        $workflowCc : WorkflowCcBean(businessType == "adm_seal_apply")
+    then
+        System.out.println("adm_seal_apply_cc_drools_1 命中");
+        $workflowCc.setCcAccounts("huajianhe,wengguohai,liuhaiying");
+        $workflowCc.setCcRoleCodes("pm,pd,dm");
+end
+

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+    <!-- 相对上面的设置，该配置可禁止页面被手势放大和缩小 -->
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover"  />
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+
+    <meta name='apple-mobile-web-app-capable' content='yes' />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <meta name='full-screen' content='true' />
+    <meta name='x5-fullscreen' content='true' />
+    <meta name='360-fullscreen' content='true' />
+
+    <title>名片,请惠存</title>
+
+    <meta name="keywords" content="名片,请惠存">
+    <meta name="description" content="名片,请惠存">
+
+    <link href='../bootstrap/css/bootstrap.min.css' rel='stylesheet'>
+
+    <link href='../hplus/css/font-awesome.min.css' rel='stylesheet'>
+    <link href='../hplus/css/ionicons.min.css' rel='stylesheet'>
+
+    <link href='../hplus/plugins/iosselect/iosSelect.css' rel='stylesheet'>
+
+    <link href='../css/app.css' rel='stylesheet'>
+
+    <style>
+        body {
+            /*
+            * 注意，container_content 如果不自适应，则body需要内补一个边距，边距=container_footer的高度
+             */
+            /*padding-top: 46px;*/
+            background: #F5F5F5;
+        }
+
+        a{
+            color:#333
+        }
+        a:hover{
+            color:#333
+        }
+
+    </style>
+</head>
+<body >
+<div id="vueApp" class="container-fluid">
+
+    <div id="cardShowLayer" class="row">
+        <div class="col-xs-12">
+
+            <div class="row">
+                <div class="col-xs-12" style="padding: 0px;">
+                    <div style="height: 502px; background-image: url('../img/card/bg_blue.png');background-size: cover;">
+                        &nbsp;
+                    </div>
+                </div>
+            </div>
+
+            <div  class="row" style="padding-left: 15px;padding-right: 15px;" >
+                <div class="col-xs-12" style="background: #ffffff; margin-top: -480px;  -moz-border-radius: 10px; border-radius: 10px;">
+
+                    <div class="row">
+                        <div class="col-xs-12" style="height: 340px; background-image: url('../img/card/bg_black.png');background-size: cover;">
+
+                            <div class="row" style="margin-top: 30px;">
+                                <div class="col-xs-2"></div>
+                                <div class="col-xs-8 text-center">
+                                    <img class="img-circle" id="companyLogo" src="../img/company/company_logo_jrx.png" style="height: 90px;width: 90px;" >
+                                </div>
+                                <div class="col-xs-2">
+                                    <img id="saveImg" class="img-responsive" src="../img/card/icon_download.png">
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin-top: 10px;">
+                                <div class="col-xs-12 text-center" style="color: #ffffff;">
+                                    <h4><strong>{{entity.cardNameCn}}</strong></h4>
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin-top: 10px;">
+                                <div class="col-xs-5">
+
+                                </div>
+                                <div class="col-xs-2">
+                                    <div style="width: 100%;height: 2px;background: #1E9FFF;"></div>
+                                </div>
+                                <div class="col-xs-5">
+
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin-top: 10px;">
+                                <div class="col-xs-12 text-center" style="color: #ffffff;">
+                                    <p>{{entity.postName}}&nbsp;&nbsp;|&nbsp;&nbsp;{{platCompany.companyName}}</p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top: 20px;">
+                        <div class="col-xs-12">
+                            <div class="pull-left" style="height: 20px;width: 20px;background: url('../img/card/icon_phone.png');background-size:cover;"></div>
+                            <p style="line-height: 24px;">&nbsp;&nbsp;<a :href="phoneHandler(entity.phone)">{{entity.phone}}</a></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div style="width: 100%;height: 1px; background-color: #f5f5f5;margin-bottom: 10px;"></div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="pull-left" style="height: 20px;width: 20px;background: url('../img/card/icon_email.png');background-size:cover;"></div>
+                            <p style="line-height: 24px;">&nbsp;&nbsp;<a :href="emailHandler(entity.email)">{{entity.email}}</a></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div style="width: 100%;height: 1px; background-color: #f5f5f5;margin-bottom: 10px;"></div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="pull-left" style="height: 20px;width: 20px;background: url('../img/card/icon_dz.png');background-size:cover;"></div>
+                            <p style="line-height: 24px;">&nbsp;&nbsp;{{platCompany.registerAddr}}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div style="width: 100%;height: 1px; background-color: #f5f5f5;margin-bottom: 10px;"></div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="pull-left" style="height: 20px;width: 20px;background: url('../img/card/icon_website.png');background-size:cover;"></div>
+                            <p style="line-height: 24px;">&nbsp;&nbsp;<a :href="platCompany.website">{{platCompany.website}}</a></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div style="width: 100%;height: 1px; background-color: #f5f5f5;margin-bottom: 10px;"></div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12">
+
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="pull-left" style="height: 20px;width: 20px;background: url('../img/card/icon_jj.png');background-size:cover;"></div>
+                                    <p style="line-height: 24px; ">&nbsp;&nbsp;公司简介</p>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <p style="color: #5f5f5f;">{{platCompany.introduce}}</p>
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin-top: 30px;" v-if="entity.qrCodeUrl!=''">
+                                <div class="col-xs-12 text-center" @click="imgPreview(entity.qrCodeUrl)">
+                                    <img :src="entity.qrCodeUrl" style="height: 120px;width: 120px;">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-xs-12 text-center" style="padding-top: 20px;margin-bottom: 20px;">
+            <a style="line-height: 36px;" href="http://qyt.jiangrongxin.com:9002/qyt/company/companyapply.html">
+                <img src="../img/card/qyt_log.png" style="height: 24px;width: 24px;border: none;"><span style="color: #00a1ff;margin-left: 15px;">来自企易通</span>
+            </a>
+
+        </div>
+    </div>
+
+</div>
+
+
+
+<div id="cardDialog" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">请您长按保存名片</h4>
+            </div>
+            <div class="modal-body">
+                <img id="cardImg" src="" class="img-responsive">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">知道了</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+</div>
+
+
+
+<script src='../js/framework/jquery.min.js'></script>
+<script src='../bootstrap/js/bootstrap.min.js'></script>
+<script src='../js/framework/vue.min.js'></script>
+
+<script src='../hplus/plugins/layer/mobile/layer.js'></script>
+<script src='../hplus/plugins/html2canvas/html2canvas_rc4.js'></script>
+
+<script src='../js/libs/function.js'></script>
+
+
+<script>document.write('<script src="../js/modules/adm/cardInfo.js"><\/script>')</script>
+
+<script>
+    $(function () {
+        $("#saveImg").on("click", function() {
+            $("#saveImg").css('display','none');
+
+
+            var shareContent = $("#cardShowLayer")[0];
+            var width = shareContent.offsetWidth;
+            var height = shareContent.offsetHeight;
+
+            html2canvas(shareContent)
+                .then(function(canvas) {
+                    var dataUrl = canvas.toDataURL('image/jpeg', 1.0);
+                    /*var newImg = document.createElement("img");
+                    newImg.src =  dataUrl;
+                    newImg.width = width;
+                    newImg.height= height;
+                    $("body")[0].appendChild(newImg);*/
+
+                    /*var imgName = "card.jpg";
+                    dataURIToBlob(imgName, dataUrl);*/
+
+                    $("#cardImg").attr("src",dataUrl );
+                    $('#cardDialog').modal('show');
+                });
+
+        });
+
+        $('#cardDialog').on('hidden.bs.modal', function (e) {
+            $("#saveImg").css('display','block');
+        })
+    });
+
+
+
+    // edited from https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toBlob#Polyfill
+    function dataURIToBlob(imgName, dataURI) {
+        var binStr = atob(dataURI.split(',')[1]),
+            len = binStr.length,
+            arr = new Uint8Array(len);
+
+        for (var i = 0; i < len; i++) {
+            arr[i] = binStr.charCodeAt(i);
+        }
+
+        callback(imgName, new Blob([arr]));
+    }
+
+    function callback(imgName, blob) {
+        var triggerDownload = $("<a>").attr("href", URL.createObjectURL(blob)).attr("download", imgName).appendTo("body").on("click", function () {
+            if (navigator.msSaveBlob) {
+                return navigator.msSaveBlob(blob, imgName);
+            }
+        });
+        triggerDownload[0].click();
+        triggerDownload.remove();
+    };
+
+</script>
+
+</body>
+</html>

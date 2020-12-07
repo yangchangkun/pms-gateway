@@ -1,0 +1,54 @@
+package com.pms.rules.workflow.cc
+
+import com.pms.drools.domain.WorkflowCcBean;
+
+/*
+* 考勤审批-出差-抄送规则
+*/
+rule "attendance_travel_cc_drools_1"
+    no-loop true
+    lock-on-active true
+    salience 300
+    when
+        $workflowCc : WorkflowCcBean(businessType == "attendance_travel" && (account == "yuanxingyu" || account == "wuxiaoming" || account == "shenqi" || account == "wengguohai" || account == "yaoxianyou" || account == "mayingchun" || account == "zhengchengbin"))
+    then
+        System.out.println("attendance_travel_cc_drools_1 命中");
+        $workflowCc.setCcAccounts("liuhaiying,chenxiyao,zhangxue,wengguohai,huajianhe,wuxiaoming");
+end
+
+rule "attendance_travel_cc_drools_2"
+    no-loop true
+    lock-on-active true
+    salience 200
+    when
+        $workflowCc : WorkflowCcBean(businessType == "attendance_travel" && saleRoleType == "sale_chief")
+    then
+        System.out.println("attendance_travel_cc_drools_2 命中");
+        $workflowCc.setCcAccounts("wuxiaoming,liuhaiying,chenxiyao,zhangxue,huajianguo,huanglong,yaoxianyou,liyan");
+        $workflowCc.setCcRoleCodes("pm,pd,dm");
+end
+
+rule "attendance_travel_cc_drools_3"
+    no-loop true
+    lock-on-active true
+    salience 100
+    when
+        $workflowCc : WorkflowCcBean(businessType == "attendance_travel" && saleRoleType == "sale_staff")
+    then
+        System.out.println("attendance_travel_cc_drools_3 命中");
+        $workflowCc.setCcAccounts("wuxiaoming,liuhaiying,chenxiyao,zhangxue,yaoxianyou,liyan");
+        $workflowCc.setCcRoleCodes("pm,pd,dm");
+end
+
+rule "attendance_travel_cc_drools_4"
+    no-loop true
+    lock-on-active true
+    salience 0
+    when
+        $workflowCc : WorkflowCcBean(businessType == "attendance_travel" && (account != "yuanxingyu" && account != "wuxiaoming" && account != "shenqi" && account != "wengguohai" && account != "yaoxianyou" && account != "mayingchun" && account != "zhengchengbin"))
+    then
+        System.out.println("attendance_travel_cc_drools_4 命中");
+        $workflowCc.setCcAccounts("liuhaiying,chenxiyao,zhangxue,wuxiaoming");
+        $workflowCc.setCcRoleCodes("pm,pd,dm");
+end
+

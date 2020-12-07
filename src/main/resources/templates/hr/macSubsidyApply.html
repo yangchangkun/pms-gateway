@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+    <!-- 相对上面的设置，该配置可禁止页面被手势放大和缩小 -->
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover"/>
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+
+    <meta name='apple-mobile-web-app-capable' content='yes'/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="format-detection" content="telephone=no"/>
+
+    <meta name='full-screen' content='true'/>
+    <meta name='x5-fullscreen' content='true'/>
+    <meta name='360-fullscreen' content='true'/>
+
+    <title>数字化管理平台</title>
+
+    <meta name="keywords" content="数字化 管理平台">
+    <meta name="description" content="数字化 管理平台">
+
+    <script src="../js/common/includeCommonCss.js"></script>
+
+    <style>
+        body {
+            /*
+            * 注意，container_content 如果不自适应，则body需要内补一个边距，边距=container_footer的高度
+             */
+            padding-top: 46px;
+        }
+
+    </style>
+</head>
+<body class="gray-bg">
+<div id="vueApp" class="container-fluid" v-cloak>
+    <!-- 固定头部 begin -->
+    <div class="navbar-fixed-top">
+        <div class="row bg-primary">
+            <div class="col-xs-3">
+                <a class="btn btn-lg btn-trans btn-block  show" onclick="onBackClick()();"><i
+                        class="fa fa-chevron-left"></i></a>
+            </div>
+            <div class="col-xs-6 text-center">
+                <span class="header-title">婚育津贴申请</span>
+            </div>
+            <div class="col-xs-3">
+                <a class="btn btn-lg btn-link btn-block show" style="color: #ffffff;"  @click="toList">记录</a>
+            </div>
+        </div>
+    </div>
+    <!-- 固定头部 end -->
+
+    <div class="row" style="margin-top: 15px;">
+        <div class="col-xs-12">
+            <div class="list-group white-bg">
+                <div class="list-group-item">
+                    <div>申请人 <span class="pull-right">{{entity.applyUserName}}</span></div>
+                </div>
+                <div class="list-group-item">
+                    <div class="form-group">
+                        <label class="control-label">所在项目</label>
+                        <select class="form-control" v-model="entity.proId" placeholder="请选择所在项目">
+                            <option v-for="(obj, index) in myJoinProList" :value="obj.proId">{{obj.proName}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="list-group-item">
+                    <div class="form-group">
+                        <label class="control-label">申请类型</label>
+                        <select class="form-control" v-model="entity.applyType" placeholder="请选择申请类型">
+                            <option v-for="(obj, index) in dictList" :value="obj.dictValue">{{obj.dictLabel}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="list-group-item">
+                    <div class="form-group">
+                        <label class="control-label">发放方式</label>
+                        <select class="form-control" v-model="entity.grantType" placeholder="请选择发放方式">
+                            <option value="1">报销发放</option>
+                            <option value="2">随工资发放</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="list-group-item">
+                    <div class="form-group">
+                        <label class="control-label">申请日期</label>
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <input type="text" class="form-control" v-model="entity.applyDate" readonly="readonly"
+                                   placeholder="请选择申请日期"
+                                   @click="datePickerChange($event, 'yyyy-MM-dd', 'entity.applyDate', '');"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="list-group-item">
+                    <div class="form-group">
+                        <label class="control-label">备注</label>
+                        <textarea class="form-control" rows="5" placeholder="备注" maxlength="1024"
+                                  v-model="entity.memo"></textarea>
+                    </div>
+                </div>
+                <div class="list-group-item">
+                    <div class="form-group">
+                        <label class="control-label">审批流程</label>
+                        <div class="input-group">
+                            <a @click="imgPreview(processInstanceImgUrl)">点击查看审批流程图</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="row">
+                <div class="col-xs-12">
+                    <h4>附件</h4>
+                </div>
+            </div>
+            <div class="row" style="padding-left: 10px;padding-right: 10px;padding-top: 5px;padding-bottom: 5px;">
+                <div class="col-xs-12" style="background: #ddd;height: 1px;"></div>
+            </div>
+            <div class="row">
+                <div class="col-xs-3" v-for="(obj, index) in ossList">
+                    <!--<a class="btn btn-contact btn-block" @click="removeOss(index);">
+                        <img alt="image" class="img-responsive" :src="obj.url"><span class="badge badge-danger">X</span>
+                    </a>-->
+                    <img alt="image" class="img-responsive" :src="obj.url" @click="ossImgPreview(index, obj.url)">
+                </div>
+
+                <div class="col-xs-3">
+                    <a class="btn btn-contact btn-block" id="uploadOss">
+                        <img alt="image" class=" img-responsive" src="../img/webuploader.png"><span
+                            class="badge badge-dark">+</span>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row" style="margin-top: 15px;">
+        <div class="col-xs-12">
+            <div class="row">
+                <div class="col-xs-12">
+                    <h4>抄送</h4>
+                </div>
+            </div>
+            <div class="row" style="padding-left: 10px;padding-right: 10px;padding-top: 5px;padding-bottom: 5px;">
+                <div class="col-xs-12" style="background: #ddd;height: 1px;"></div>
+            </div>
+            <div class="row">
+                <div class="col-xs-3" v-for="(obj, index) in ccStaffList">
+                    <div class="text-center ">
+                        <div>
+                            <img alt="image" class="img-circle" :src="photoHandler(obj.photo)" style="width: 60px;height: 60px;">
+                        </div>
+                        <span>{{obj.name}}</span>
+                    </div>
+                </div>
+                <div class="col-xs-3" v-for="(obj, index) in ccContactList">
+                    <div class="text-center btn btn-contact btn-block" @click="removeCcContactList(index);">
+                        <div>
+                            <img alt="image" class="img-circle" :src="photoHandler(obj.photo)" style="width: 60px;height: 60px;">
+                        </div>
+                        <span>
+                            {{obj.name}}
+                        </span>
+                        <span class="badge badge-danger">x</span>
+                    </div>
+                </div>
+                <div class="col-xs-3">
+                    <div class="text-center " data-toggle="modal" data-target="#modal-cc-staff">
+                        <div>
+                            <img alt="image" class="" src="../img/app/btn_add.png" style="width: 60px;height: 60px;">
+                        </div>
+                        <span>
+                            添加
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" style="margin-top: 15px;padding-bottom: 15px;">
+        <div class="col-xs-2">
+        </div>
+        <div class="col-xs-8">
+            <button type="button" class="btn btn-success btn-block" @click="saveEntity">提交申请</button>
+        </div>
+        <div class="col-xs-2">
+        </div>
+    </div>
+
+    <!-- 抄送人模态框 begin -->
+    <div class="modal fade" id="modal-cc-staff">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">选择抄送人</h4>
+                </div>
+                <div class="modal-body embed-responsive" style="height:480px; width: 100%; padding: 0px;-webkit-overflow-scrolling: touch;-webkit-overflow:auto;overflow:auto;">
+                    <iframe class="embed-responsive-item" id="ccStaffIframe" name="ccStaffIframe" src="../contact/contactChoice.html?status=1"></iframe>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 抄送人模态框 end -->
+
+    <!-- 图片预览模态框 begin -->
+    <div class="modal fade" id="modal-image">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">图片预览</h4>
+                </div>
+                <div class="modal-body" style="padding: 5px;">
+                    <div class="row" >
+                        <div class="col-xs-12">
+                            <img :src="currOssImgUrl" class=" img-responsive">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" @click="ossImgDelete()">删除</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 图片预览模态框 end -->
+
+</div>
+
+
+
+<script src="../js/common/includeCommonScript.js"></script>
+
+<script>document.write('<script src="../js/modules/hr/macSubsidyApply.js?t=' + globalJsVer + '"><\/script>')</script>
+
+<script>
+    $(function () {
+        initFileUpload();
+
+        $('#modal-cc-staff').on('show.bs.modal', function (e) {
+
+        });
+    });
+
+</script>
+
+</body>
+</html>

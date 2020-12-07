@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+    <!-- 相对上面的设置，该配置可禁止页面被手势放大和缩小 -->
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover"  />
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+
+    <meta name='apple-mobile-web-app-capable' content='yes' />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <meta name='full-screen' content='true' />
+    <meta name='x5-fullscreen' content='true' />
+    <meta name='360-fullscreen' content='true' />
+
+    <title>数字化管理平台</title>
+
+    <meta name="keywords" content="数字化 管理平台">
+    <meta name="description" content="数字化 管理平台">
+
+    <script src="../js/common/includeCommonCss.js"></script>
+
+    <style>
+        contact-list {
+            border-bottom:1px solid red;
+        }
+
+    </style>
+</head>
+<body class="gray-bg">
+<div id="vueApp" class="container-fluid" v-cloak>
+    <!-- 搜索 begin -->
+    <div class="row" style="margin-top: 15px;">
+        <div class="col-xs-12" >
+            <div class="input-group">
+                <input id="searchKey" type="search" class="form-control" v-model="queryParam.searchKey" placeholder="请输入关键字"/>
+                <div class="input-group-btn">
+                    <button class="btn btn-primary" type="button" @click="search()">
+                        搜索
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 搜索 end -->
+
+    <div class="row" style="margin-top: 15px;">
+        <div class="col-xs-12" >
+
+            <div class="list-group white-bg" >
+                <div class="list-group-item" v-for="(obj, index) in gridDatas">
+                    <div class="media" @click="toDetail(obj)">
+                        <div class="media-left pull-left">
+                            <a  >
+                                <img class="media-object img-circle" :src="photoHandler(obj.photo)" alt="..." style="width: 40px;height: 40px;">
+                            </a>
+                        </div>
+                        <div class="media-body">
+                            <h4 class="media-heading">
+                                {{obj.name}}
+                                <span class="label label-danger" style="font-size: 12px;" v-if="obj.status=='0'">已离职</span>
+                            </h4>
+                            {{"["+obj.joinAddr+"]"+obj.joinDeptName}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+
+
+<script src="../js/common/includeCommonScript.js"></script>
+
+<script>document.write('<script src="../js/modules/contact/contactChoice.js?t=' + globalJsVer + '"><\/script>')</script>
+
+<script>
+    $(function () {
+        $("#searchKey").on('keypress',function(e) {
+            var keycode = e.keyCode;
+            var searchKey = $(this).val();
+            if(keycode=='13') {
+                e.preventDefault();
+                //请求搜索接口
+                vm.search();
+            }
+        });
+
+    });
+
+</script>
+
+</body>
+</html>

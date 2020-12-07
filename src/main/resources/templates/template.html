@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+	<meta charset="utf-8">
+	<!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+	<!-- 相对上面的设置，该配置可禁止页面被手势放大和缩小 -->
+	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover"  />
+
+	<title>PMS 数字化管理平台</title>
+	<meta name="keywords" content="PMS 数字化管理平台">
+	<meta name="description" content="PMS 数字化管理平台">
+
+	<script src="../../../js/common/includeCommonCss.js"></script>
+
+</head>
+
+<body class="container-fluid">
+
+	<div id="pmsApp" style="margin-top: 10px;">
+		<!-- 搜索条件布局 begin -->
+		<div id="container_search">
+			<div class="row">
+
+			</div>
+		</div>
+		<!-- 搜索条件布局 end -->
+
+		<!-- 列表table布局 begin -->
+		<div id="container_grid" >
+			<div class="row">
+				<div class="col-xs-12">
+					<div class="table-responsive">
+						<table class="table table-striped table-hover table-bordered text-nowrap">
+
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 列表table布局 end -->
+
+		<!-- 分页布局 begin -->
+		<div id="container_page">
+			<div class="row">
+				<div class="col-xs-12">
+					<ol class="breadcrumb pull-left" style="margin: 0px;">
+						<li>总记录数:&nbsp;<strong>{{webPage.total}}</strong>&nbsp;&nbsp;</li>
+						<li>每页记录数:&nbsp;<strong>{{webPage.pageSize}}</strong>&nbsp;&nbsp;</li>
+						<li class="active">当前页:&nbsp;<strong>{{webPage.pageNum}}/{{webPage.pages}}</strong></li>
+					</ol>
+					<ul class="pager pull-right" style="margin: 0px;">
+						<li><a   @click="queryList(1)">首页</a></li>
+						<li><a   v-if="webPage.hasPreviousPage" @click="queryList(webPage.prePage)">上一页</a></li>
+						<li v-for="page in webPage.navigatepageNums">
+							<a   @click="queryList(page)">{{page}}</a>
+						</li>
+						<li><a   v-if="webPage.hasNextPage"  @click="queryList(webPage.nextPage)">下一页</a></li>
+						<li><a   @click="queryList(webPage.pages)">尾页</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<!-- 分页布局 end -->
+
+		<!-- 详情布局 begin -->
+		<div id="container_form" style="display: none;">
+			<div class="wrapper wrapper-content">
+
+			</div>
+		</div>
+		<!-- 详情布局 end -->
+
+	</div>
+
+
+	<script src="../../../js/common/includeCommonScript.js"></script>
+
+	<script src="../../../js/libs/changeContainerHeight.js"></script>
+
+	<script src="../../../js/modules/monitor/logininfor/logininfo.js"></script>
+
+	<script>
+
+	</script>
+</body>
+
+</html>

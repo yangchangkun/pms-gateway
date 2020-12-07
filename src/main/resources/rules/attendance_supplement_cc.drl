@@ -1,0 +1,30 @@
+package com.pms.rules.workflow.cc
+
+import com.pms.drools.domain.WorkflowCcBean;
+
+/*
+* 考勤审批-补卡-抄送规则
+* 1、翁总及几个部门经理的补卡，要抄送给吴总和高雷鸣
+* 2、普通员工（正常流程），抄送给审批人的上一级（总监或部门经理）
+*/
+rule "attendance_supplement_cc_drools_1"
+    no-loop true
+    lock-on-active true
+    salience 300
+    when
+        $workflowCc : WorkflowCcBean(businessType == "attendance_supplement" && (account == "yuanxingyu" || account == "wuxiaoming" || account == "shenqi" || account == "wengguohai" || account == "yaoxianyou" || account == "mayingchun" || account == "zhengchengbin"))
+    then
+        System.out.println("attendance_supplement_cc_drools_1 命中");
+        $workflowCc.setCcAccounts("wengguohai,huajianhe");
+end
+
+rule "attendance_supplement_cc_drools_2"
+    no-loop true
+    lock-on-active true
+    salience 0
+    when
+        $workflowCc : WorkflowCcBean(businessType == "attendance_supplement"  && (account != "yuanxingyu" && account != "wuxiaoming" && account != "shenqi" && account != "wengguohai" && account != "yaoxianyou" && account != "mayingchun" && account != "zhengchengbin"))
+    then
+        System.out.println("attendance_supplement_cc_drools_2 命中");
+        $workflowCc.setCcRoleCodes("pm,pd,dm");
+end

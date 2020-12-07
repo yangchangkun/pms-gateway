@@ -1,0 +1,18 @@
+package com.pms.rules.workflow.cc
+
+import com.pms.drools.domain.WorkflowCcBean;
+
+/*
+* 客户拜访记录抄送规则
+*/
+rule "crm_presale_support_cc_drools_1"
+    no-loop true
+    lock-on-active true
+    salience 0
+    when
+        $workflowCc : WorkflowCcBean(businessType == "crm_presale_support")
+    then
+        System.out.println("crm_presale_support_cc_drools_1 命中");
+        $workflowCc.setCcAccounts("huajianhe");
+end
+

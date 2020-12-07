@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+    <!-- 相对上面的设置，该配置可禁止页面被手势放大和缩小 -->
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover"/>
+
+    <title>数字化管理平台</title>
+    <meta name="keywords" content="数字化管理平台">
+    <meta name="description" content="数字化管理平台">
+
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="bootstrap/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="hplus/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+
+    <link href="hplus/css/animate.css" rel="stylesheet">
+    <!--<link href="hplus/css/style.css" rel="stylesheet">-->
+
+    <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html"/>
+    <![endif]-->
+
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+
+    <script>
+        if (window.top !== window.self) {
+            window.top.location = window.location;
+        }
+    </script>
+</head>
+
+<body class="gray-bg">
+
+<div id="rrapp" class="container-fluid" v-cloak>
+    <div class="row">
+        <div class="col-xs-12" style="padding: 0px;">
+            <div>
+                <div style="position:absolute;z-index:100; width: 100%;">
+                    <img src="img/app/login_bg.png" style="height: auto;max-height: 240px;width: 100%;">
+                </div>
+                <div style="position:absolute;z-index:120; left:50%;top:30px;margin-left: -60px;">
+                    <img class="img-circle" src="img/app/login_logo.png" style="height: 120px;width: 120px;">
+                </div>
+
+                <div style="position:absolute;z-index:150;top:260px; width: 100%; padding-left: 40px; padding-right: 40px;">
+                    <form>
+                        <div class="form-group">
+                            <input type="text" class="form-control input-lg" v-model="account" id="account" name="account" placeholder="账号"
+                                   @keyup.enter="login">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control input-lg" v-model="password" placeholder="密码" @keyup.enter="login">
+                        </div>
+                        <div class="form-group">
+                            <p style="color: #ff0000">{{errorMsg}}&nbsp;</p>
+                        </div>
+                        <div class="form-group" style="margin-top: 20px;">
+                            <button type="button" class="btn btn-primary btn-block btn-lg" @click="login">登 录</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- 全局js -->
+<!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+<script src="js/framework/jquery.min.js"></script>
+<!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+<script src="bootstrap/js/bootstrap.min.js"></script>
+<!-- layer-v3.0.1 -->
+<script src="hplus/plugins/layer/mobile/layer.js"></script>
+
+<!-- vue 2.5.13 -->
+<script src="js/framework/vue.min.js"></script>
+
+<script src="js/libs/localStorageUtils.js"></script>
+
+<script src="js/libs/function.js"></script>
+<script src="js/libs/fingerprint2.js"></script>
+<!--<script src="js/common/common.js"></script>-->
+
+<script type="text/javascript">
+    var vm = new Vue({
+        el: '#rrapp',
+        data: {
+            account: '',
+            password: '',
+            errorMsg: '',
+
+        },
+        beforeCreate: function () {
+            if (self != top) {
+                top.location.href = self.location.href;
+            }
+        },
+        methods: {
+            login: function () {
+                if (isBlank(vm.account)) {
+                    vm.errorMsg = "请输入登录账号";
+                    return true;
+                }
+                if (isBlank(vm.password)) {
+                    vm.errorMsg = "请输入密码";
+                    return true;
+                }
+
+                var layerIndex = layer.open({
+                    type: 2
+                    , content: '正在登录...'
+                });
+
+                $.ajax({
+                    type: "POST",
+                    url: "/pms/app/common/login",
+                    data: {
+                        account: vm.account,
+                        password: vm.password
+                    },
+                    success: function (r) {
+                        layer.close(layerIndex);
+                        if (r.code == 0) {//登录成功
+                            myStorage.setToken(r.token);
+                            myStorage.setLoginAccount(vm.account);
+                            myStorage.setPmsUserId(r.pmsUserId);
+                            myStorage.setMemberId(r.memberId);
+                            myStorage.setStaff(r.staffInfo);
+
+                            parent.location.href = 'home.html';
+                        } else {
+                            vm.errorMsg = r.msg;
+                        }
+                    },
+                    error: function (data) {
+                        layer.close(layerIndex);
+                        layer.open({
+                            content: '请求出错，请稍后再试！',
+                            btn: '我知道了'
+                        });
+                    }
+                });
+            },
+
+        },
+        mounted: function () {
+            var account = myStorage.getLoginAccount()
+            console.log("account:" + account);
+            if (account != null && account.length >= 0) {
+                this.account = account;
+            }
+
+            //自动登录
+            var token = myStorage.getToken();
+            if (token != null && token.length >= 0) {
+                parent.location.href = 'home.html';
+            }
+        }
+    });
+
+
+    var fingerPrintReport = function () {
+        Fingerprint2.get(function (components) {
+            var fingerPrint = Fingerprint2.x64hash128(components.map(function (pair) {
+                return pair.value
+            }).join(), 31)
+            console.log("浏览器指纹:" + fingerPrint);
+            myStorage.setFinger(fingerPrint)
+            /*var details = ""
+            for (var index in components) {
+                var obj = components[index]
+                var line = obj.key + " = " + String(obj.value).substr(0, 100)
+                details += line + "\n"
+            }*/
+        })
+    }
+
+    $(function () {
+        var fingerPrint = myStorage.getFinger();
+        if (fingerPrint != null && fingerPrint.length >= 0) {
+
+        } else {
+            setTimeout(fingerPrintReport, 500);
+        }
+
+    });
+</script>
+
+</body>
+
+</html>

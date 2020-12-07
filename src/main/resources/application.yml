@@ -1,0 +1,103 @@
+# 开发环境配置
+server:
+  # 服务端口
+  port: 9008
+  servlet:
+    # 项目contextPath
+    context-path: /pms
+  tomcat:
+    # tomcat的URI编码
+    uri-encoding: UTF-8
+    # tomcat最大线程数，默认为200
+    max-threads: 800
+    # Tomcat启动初始化的线程数，默认值25
+    min-spare-threads: 30
+
+# Spring配置
+spring:
+  profiles:
+    active: local
+  # 模板引擎
+  thymeleaf:
+    cache: false
+    refix: classpath:/templates/
+    suffix: .html
+    mode: LEGACYHTML5
+    encoding: UTF-8
+    #spring.thymeleaf.content-type=text/html # ;charset=<encoding> is added
+  jpa:
+    database: mysql
+    generate-ddl: false
+    show-sql: true
+    format-sql: true
+    properties:
+      #hibernate.dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+      hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
+    hibernate:
+      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+      ddl-auto: none
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+  # 文件上传
+  servlet:
+     multipart:
+       max-file-size:  30MB
+       max-request-size:  30MB
+  # 指定静态资源的路径
+  resources:
+    static-locations: classpath:/static/,classpath:/templates/
+  # 资源信息
+  messages:
+    # 国际化资源文件路径
+    basename: i18n/messages
+  # 服务模块
+  devtools:
+    restart:
+      # 热部署开关
+      enabled: true
+  mail:
+    host: smtp.xxx.com
+    username: abc@xxx.com
+    password: 
+    default-encoding: UTF-8
+    port: 465
+    properties:
+      mail.smtp.auth: true
+      mail:
+        smtp:
+          ssl:
+            enable: true
+            trust: smtp.riveretech.com
+      mail.smtp.socketFactory.port: 465
+      mail.smtp.socketFactory.class: javax.net.ssl.SSLSocketFactory
+      mail.smtp.socketFactory.fallback: false
+
+# MyBatis
+mybatis:
+    # 搜索指定包别名
+    typeAliasesPackage: com.pms
+    # 配置mapper的扫描，找到所有的mapper.xml映射文件
+    mapperLocations: classpath*:mapper/**/*Mapper.xml
+    # 加载全局的配置文件
+    configLocation: classpath:mapper/mybatis-config.xml
+
+# PageHelper分页插件
+pagehelper: 
+  helperDialect: mysql
+  #当启用合理化时，如果 pageNum>pages,默认会查询最后一页的数据。禁用合理化后，当 pageNum>pages 会返回空数据
+  reasonable: false
+  supportMethodsArguments: true
+  params: count=countSql
+
+pms:
+  # 名称
+  name: PMS
+  # 版本
+  version: 1.0.0
+  # 版权年份
+  copyrightYear: 2019
+  # 首页地址
+  indexUrl: /login.html
+  # 获取ip地址开关
+  addressEnabled: true

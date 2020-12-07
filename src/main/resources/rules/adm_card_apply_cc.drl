@@ -1,0 +1,31 @@
+package com.pms.rules.workflow.cc
+
+import com.pms.drools.domain.WorkflowCcBean;
+
+/*
+* 行政审批-名片印刷申请-抄送规则
+*/
+rule "adm_card_apply_cc_drools_1"
+    no-loop true
+    lock-on-active true
+    salience 300
+    when
+        $workflowCc : WorkflowCcBean(businessType == "adm_card_apply" && (account == "yuanxingyu" || account == "wuxiaoming" || account == "shenqi" || account == "wengguohai" || account == "yaoxianyou" || account == "mayingchun" || account == "zhengchengbin"))
+    then
+        System.out.println("adm_card_apply_cc_drools_1 命中");
+        $workflowCc.setCcAccounts("chenxiyao,weiguili,wuxiaoming,wengguohai,huajianhe");
+end
+
+rule "adm_card_apply_cc_drools_2"
+    no-loop true
+    lock-on-active true
+    salience 0
+    when
+        $workflowCc : WorkflowCcBean(businessType == "adm_card_apply" && (account != "yuanxingyu" && account != "wuxiaoming" && account != "shenqi" && account != "wengguohai" && account != "yaoxianyou" && account != "mayingchun" && account != "zhengchengbin"))
+    then
+        System.out.println("adm_card_apply_cc_drools_2 命中");
+        $workflowCc.setCcAccounts("chenxiyao,weiguili,wuxiaoming");
+        $workflowCc.setCcRoleCodes("pm,pd,dm");
+end
+
+

@@ -1,0 +1,18 @@
+package com.pms.rules.workflow.cc
+
+import com.pms.drools.domain.WorkflowCcBean;
+
+/*
+* 人事审批-调岗-抄送规则
+*/
+rule "hr_post_adjustment_cc_drools_1"
+    no-loop true
+    lock-on-active true
+    salience 0
+    when
+        $workflowCc : WorkflowCcBean(businessType == "hr_post_adjustment")
+    then
+        System.out.println("hr_post_adjustment_cc_drools_1 命中");
+        $workflowCc.setCcAccounts("wengguohai,wuxiaoming,wangshaojing,gaoleiming,wangjunxia,wengguohai");
+end
+

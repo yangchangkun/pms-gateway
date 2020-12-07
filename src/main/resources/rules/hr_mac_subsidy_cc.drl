@@ -1,0 +1,30 @@
+package com.pms.rules.workflow.cc
+
+import com.pms.drools.domain.WorkflowCcBean;
+
+/*
+* 人事审批-婚育津贴-抄送规则
+*/
+rule "hr_mac_subsidy_cc_drools_1"
+    no-loop true
+    lock-on-active true
+    salience 300
+    when
+        $workflowCc : WorkflowCcBean(businessType == "hr_mac_subsidy" && (account == "yuanxingyu" || account == "wuxiaoming" || account == "shenqi" || account == "wengguohai" || account == "yaoxianyou" || account == "mayingchun" || account == "zhengchengbin"))
+    then
+        System.out.println("hr_mac_subsidy_cc_drools_1 命中");
+        $workflowCc.setCcAccounts("wuxiaoming,liuhaiying,zhangxue,wangshaojing,gaoleiming,wengguohai,huajianhe");
+end
+
+rule "hr_mac_subsidy_cc_drools_2"
+    no-loop true
+    lock-on-active true
+    salience 0
+    when
+        $workflowCc : WorkflowCcBean(businessType == "hr_mac_subsidy" && (account != "yuanxingyu" && account != "wuxiaoming" && account != "shenqi" && account != "wengguohai" && account != "yaoxianyou" && account != "mayingchun" && account != "zhengchengbin"))
+    then
+        System.out.println("hr_mac_subsidy_cc_drools_2 命中");
+        $workflowCc.setCcAccounts("wuxiaoming,liuhaiying,zhangxue,wangshaojing,gaoleiming,");
+        $workflowCc.setCcRoleCodes("pm,pd,dm");
+end
+

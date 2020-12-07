@@ -1,0 +1,119 @@
+# 数据源配置
+spring:
+    datasource:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driverClassName: com.mysql.cj.jdbc.Driver
+        druid:
+            # 主库数据源
+            master:
+                url: jdbc:mysql://localhost:3306/qyt_pms?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&allowMutiQueries=true&serverTimezone=GMT%2B8
+                username: 
+                password: 
+            # 从库数据源
+            slave:
+                # 从数据源开关/默认关闭
+                enabled: false
+                url: jdbc:mysql://localhost:3306/qyt_pms?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&allowMutiQueries=true&serverTimezone=GMT%2B8
+                username: 
+                password: 
+            # 初始连接数
+            initial-size: 10
+            # 最大连接池数量
+            max-active: 100
+            # 最小连接池数量
+            min-idle: 10
+            # 配置获取连接等待超时的时间
+            max-wait: 60000
+            # 打开PSCache，并且指定每个连接上PSCache的大小
+            pool-prepared-statements: true
+            max-pool-prepared-statement-per-connection-size: 20
+            # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+            timeBetweenEvictionRunsMillis: 60000
+            # 配置一个连接在池中最小生存的时间，单位是毫秒
+            min-evictable-idle-time-millis: 300000
+            validation-query: SELECT 1 FROM DUAL
+            test-while-idle: true
+            test-on-borrow: false
+            test-on-return: false
+            stat-view-servlet:
+                enabled: true
+                url-pattern: /monitor/druid/*
+            filter:
+                stat:
+                    log-slow-sql: true
+                    slow-sql-millis: 1000
+                    merge-sql: false
+                wall:
+                    config:
+                        multi-statement-allow: true
+    redis:
+        database: 3
+        host: 
+        password: ''
+        port: 7001
+        jedis:
+          pool:
+            #最大连接数据库连接数,设 0 为没有限制
+            max-active: 8
+            #最大等待连接中的数量,设 0 为没有限制
+            max-idle: 8
+            #最大建立连接等待时间。如果超过此时间将接到异常。设为-1表示无限制。
+            max-wait: -1ms
+            #最小等待连接中的数量,设 0 为没有限制
+            min-idle: 0
+    # 指定上传文件临时目录
+    servlet:
+       multipart:
+         location: /opt/pmsData/tmp
+
+# 日志配置
+logging:
+  level:
+    com.pms: debug
+    org.springframework: WARN
+    org.spring.springboot.dao: debug
+
+# 项目相关配置
+yck:
+  #系统通用配置
+  config:
+    #平均每天计薪的总小时
+    paidTimes: 8
+
+# 平台网关相关配置
+plat:
+  config:
+    # 文件上传路径
+    ossUploadFilePath: /opt/pmsData/
+    #oss通用下载地址入口
+    ossUrl: 
+    #企易通网关入口地址
+    qytGatewayHost: http://pms.jiangrongxin.com:11056/qyt/
+    #企易通单点登录请求地址
+    qytSsoLoginUrl: http://pms.jiangrongxin.com:11056/qyt/app/login/ssoLogin
+    #企易通加入公司/离职反馈请求地址
+    qytJoinCompanyCallUrl: http://pms.jiangrongxin.com:11056/qyt/app/member/joinCompanyCallback
+    #获取企易通企业信息请求地址
+    qytCompanyInfoUrl: http://pms.jiangrongxin.com:11056/qyt/app/company/info
+    #企易通消息中心入口地址
+    mcHost: http://pms.jiangrongxin.com:11057/mc/
+    #企易通短信服务(验证码)请求地址
+    mcSmsServiceUrl: http://pms.jiangrongxin.com:11057/mc/sms/gateway/sendVerifyCode
+    #企易通邮件服务(简单邮件)请求地址
+    mcMailServiceUrl: http://pms.jiangrongxin.com:11057/mc/mail/gateway/sendSimpleMail
+    #企易通推送服务请求地址
+    mcPushServiceUrl: http://pms.jiangrongxin.com:11057/mc/push/gateway/send
+    #企易通MQTT消息发送服务请求地址
+    mcMqttServiceUrl: http://pms.jiangrongxin.com:11057/mc/mqtt/gateway/send
+
+# 场景云配置信息
+scene:
+  cloud:
+    # 场景云首页访问前缀
+    homeUrlPrefix: http://pms.jiangrongxin.com:11019/gate/index.html
+    # 托管平台给场景端分配的唯一标识
+    appId: 93F641EE60246C421CDD7A46D7E56D1D
+    #场景端的子应用渠道code
+    channelCode: 0bad1fc9b24c47769501f84a7f07fc3a
+    #场景云秘钥
+    appSecret: 14D254443E9B92CEF3013EF899F5CD1D

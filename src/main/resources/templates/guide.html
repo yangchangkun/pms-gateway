@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+    <!-- 相对上面的设置，该配置可禁止页面被手势放大和缩小 -->
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover"  />
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+
+    <title>数字化管理平台</title>
+
+    <meta name="keywords" content="数字化 管理平台">
+    <meta name="description" content="数字化 管理平台">
+
+    <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+    <![endif]-->
+
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+
+
+</head>
+<body>
+
+    <!-- jQuery 2.2.3 -->
+    <script src="js/framework/jquery.min.js"></script>
+
+
+    <script type="text/javascript">
+        var lange = true;
+        $(function(){
+            var userAgentInfo = navigator.userAgent;
+            var Agents = new Array("Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod");
+            var flag = true;
+            for (var v = 0; v < Agents.length; v++) {
+                if (userAgentInfo.indexOf(Agents[v]) > 0) { flag = false; break; }
+            }
+            alert("flag="+flag);
+            if(flag){
+                /*if (lange){
+                    window.location.href= 'pcIndex.html';
+                }else {
+                    window.location.href= 'pcIndex-zh.html';
+                }*/
+                window.location.href= 'login.html';
+            }else{
+                /*if (lange){
+                    window.location.href="mIndex.html";
+                }else {
+                    window.location.href="mIndex-zh.html";
+                }*/
+                window.location.href="h5_login.html";
+            }
+        });
+        function Islg() {
+            var language = navigator.browserLanguage?navigator.browserLanguage:navigator.language;
+            if (language.indexOf('zh') > -1){
+                lange = false;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+package com.pms.rules.workflow.cc
+
+import com.pms.drools.domain.WorkflowCcBean;
+
+/*
+* 客户拜访记录抄送规则
+*/
+rule "crm_customer_visit_cc_drools_1"
+    no-loop true
+    lock-on-active true
+    salience 0
+    when
+        $workflowCc : WorkflowCcBean(businessType == "crm_customer_visit" && (account == "liyan" || account == "lixiaomei"))
+    then
+        System.out.println("crm_customer_visit_cc_drools_1 命中");
+        $workflowCc.setCcAccounts("yaoxianyou,huajianhe");
+end
+
+rule "crm_customer_visit_cc_drools_2"
+    no-loop true
+    lock-on-active true
+    salience 0
+    when
+        $workflowCc : WorkflowCcBean(businessType == "crm_customer_visit" && account == "zhangyue")
+    then
+        System.out.println("crm_customer_visit_cc_drools_2 命中");
+        $workflowCc.setCcAccounts("yaoxianyou,huajianhe,huquanquan");
+end
+
+rule "crm_customer_visit_cc_drools_3"
+    no-loop true
+    lock-on-active true
+    salience 0
+    when
+        $workflowCc : WorkflowCcBean(businessType == "crm_customer_visit")
+    then
+        System.out.println("crm_customer_visit_cc_drools_3 命中");
+        $workflowCc.setCcAccounts("yaoxianyou,huajianhe,lixiaomei,liyan");
+end
+

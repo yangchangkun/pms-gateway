@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+
+    <meta name='apple-mobile-web-app-capable' content='yes' />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <meta name='full-screen' content='true' />
+    <meta name='x5-fullscreen' content='true' />
+    <meta name='360-fullscreen' content='true' />
+
+    <title>数字化管理平台</title>
+
+    <meta name="keywords" content="数字化 管理平台">
+    <meta name="description" content="数字化 管理平台">
+
+    <script src="../js/common/includeCommonCss.js"></script>
+
+    <style>
+        body {
+            /*
+            * 注意，container_content 如果不自适应，则body需要内补一个边距，边距=container_footer的高度
+             */
+            padding-top: 46px;
+        }
+
+        div.caption {
+            padding: 0px;
+        }
+
+        .col-xs-3 > .badge {
+            position: absolute;
+            top: 0px;
+            right: 10px;
+            font-size: 10px;
+            font-weight: 400;
+            background-color: #ff0000;
+            color: #fff;
+        }
+    </style>
+</head>
+<body >
+<div id="vueApp" class="container-fluid" v-cloak>
+    <!-- 固定头部 begin -->
+    <div class="navbar-fixed-top">
+        <div class="row bg-primary">
+            <div class="col-xs-3">
+                <a class="btn btn-trans btn-block  hidden" ><i class="fa fa-chevron-left"></i></a>
+            </div>
+            <div class="col-xs-6 text-center">
+                <img src="../img/app/login_logo.png" style="height: 40px">
+                <span class="header-title">江融信科技</span>
+            </div>
+            <div class="col-xs-3">
+                <a class="btn btn-lg btn-trans btn-block   show" href="../activiti/activitiHome.html" target="_blank"><i class="fa fa-tasks"></i></a>
+                <span class="badge" style="top:2px;right: 20px;">{{myTodoCnt}}</span>
+            </div>
+        </div>
+    </div>
+    <!-- 固定头部 end -->
+
+    <!-- 个人信息 begin -->
+    <div class="row">
+        <div class="col-xs-6">
+            <h5 class="pull-left">{{staffInfo.name}}</h5>
+        </div>
+        <div class="col-xs-6">
+            <h5 class="pull-right">{{currDate}}</h5>
+        </div>
+    </div>
+    <!-- 个人信息 end -->
+
+
+
+    <div id="contentLayout" style="margin-top: 15px;">
+        <div class="row" style="margin-left: 0px;margin-right: 0px;">
+            <div class="col-xs-12" style="border-bottom: 1px solid #ddd; padding-left: 0px;">
+                <h4><strong>知识库</strong></h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3 " >
+                <a class="thumbnail" href="../cloudDisk/cloudDisk.html" target="_blank" style="margin-bottom: 0px; background-color: #00000000; border: 0px solid #ddd;">
+                    <img src="../img/app/icon_cloud_disk.png" class="img-responsive">
+                    <div class="caption" style="padding:0px;">
+                        <h5 class="text-center">云盘</h5>
+                    </div>
+                </a>
+<!--
+                <a class="btn btn-info btn-block" href="../cloudDisk/cloudDisk.html" target="_blank">
+                    <small>云盘<br />&nbsp;</small>
+                </a>-->
+            </div>
+            <div class="col-xs-3" >
+                <a class="thumbnail" href="../notice/noticeList.html" target="_blank" style="margin-bottom: 0px; background-color: #00000000; border: 0px solid #ddd;">
+                    <img src="../img/app/icon_notice.png" class="img-responsive">
+                    <div class="caption" style="padding:0px;">
+                        <h5 class="text-center">公告</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="col-xs-3" >
+                <a class="thumbnail" href="#" target="_blank" style="margin-bottom: 0px; background-color: #00000000; border: 0px solid #ddd;"
+                    @click="forwardSceneCloud">
+                    <img src="../img/app/icon_notice.png" class="img-responsive">
+                    <div class="caption" style="padding:0px;">
+                        <h5 class="text-center">钱包</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="col-xs-3" >
+
+            </div>
+        </div>
+
+        <div class="row" style="margin-left: 0px;margin-right: 0px;">
+            <div class="col-xs-12" style="border-bottom: 1px solid #ddd; padding-left: 0px;">
+                <h4 ><strong>考勤</strong></h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3 " >
+                <a class="thumbnail" href="../uc/staffArchives.html?userId=ff808081655d04c901657a0130ec009d" target="_blank" style="margin-bottom: 0px; background-color: #00000000; border: 0px solid #ddd;">
+                    <img src="../img/app/icon_attend_daka.png" class="img-responsive">
+                    <div class="caption" style="padding:0px;">
+                        <h5 class="text-center">打卡</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="col-xs-3 " >
+                <a class="thumbnail" href="../attendance/attendReport.html" target="_blank" style="margin-bottom: 0px; background-color: #00000000; border: 0px solid #ddd;">
+                    <img src="../img/app/icon_attend_report.png" class="img-responsive">
+                    <div class="caption" style="padding:0px;">
+                        <h5 class="text-center">统计</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="col-xs-3 " >
+                <a class="thumbnail" href="../attendance/supplementApply.html" target="_blank" style="margin-bottom: 0px; background-color: #00000000; border: 0px solid #ddd;">
+                    <img src="../img/app/icon_attend_supplement.png" class="img-responsive">
+                    <div class="caption" style="padding:0px;">
+                        <h5 class="text-center">补卡 </h5>
+                    </div>
+                </a>
+            </div>
+            <div class="col-xs-3 " >
+                <a class="thumbnail" href="../attendance/overTimeApply.html" target="_blank" style="margin-bottom: 0px; background-color: #00000000; border: 0px solid #ddd;">
+                    <img src="../img/app/icon_attend_overtime.png" class="img-responsive">
+                    <div class="caption" style="padding:0px;">
+                        <h5 class="text-center">加班</h5>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3 " >
+                <a class="thumbnail" href="../attendance/leaveApply.html" target="_blank" style="margin-bottom: 0px; background-color: #00000000; border: 0px solid #ddd;">
+                    <img src="../img/app/icon_attend_leave.png" class="img-responsive">
+                    <div class="caption" style="padding:0px;">
+                        <h5 class="text-center">请假</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="col-xs-3 " >
+                <a class="thumbnail" href="../attendance/travelApply.html" target="_blank" style="margin-bottom: 0px; background-color: #00000000; border: 0px solid #ddd;">
+                    <img src="../img/app/icon_attend_travel.png" class="img-responsive">
+                    <div class="caption" style="padding:0px;">
+                        <h5 class="text-center">出差</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="col-xs-3 " >
+                <a class="thumbnail" href="../attendance/egressApply.html" target="_blank" style="margin-bottom: 0px; background-color: #00000000; border: 0px solid #ddd;">
+                    <img src="../img/app/icon_attend_egress.png" class="img-responsive">
+                    <div class="caption" style="padding:0px;">
+                        <h5 class="text-center">外出</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="col-xs-3 " >
+                <a class="thumbnail" href="../attendance/attendApproval.html" target="_blank" style="margin-bottom: 0px; background-color: #00000000; border: 0px solid #ddd;">
+                    <img src="../img/app/icon_approval.png" class="img-responsive">
+                    <div class="caption" style="padding:0px;">
+                        <h5 class="text-center">审批</h5>
+                    </div>
+                </a>
+                <span class="badge" v-if="myTodoCntMap.attendance_cnt!=0">{{myTodoCntMap.attendance_cnt}}</span>
+            </div>
+        </div>
+
+        <div class="row" style="margin-left: 0px;margin-right: 0px;">
+            <div class="col-xs-12" style="border-bottom: 1px solid #ddd; padding-left: 0px;">
+                <h4><strong>日常工作</strong></h4>
+            </div>
+        </div>
+        <div class="row">
+            <!--<div class="col-xs-3" >
+                <a class="thumbnail" href="../daily/dailyApply.html" target="_blank" style="margin-bottom: 0px; background-color: #00000000; border: 0px solid #ddd;">
+                    <img src="../img/app/icon_daily_kpi.png" class="img-responsive">
+                    <div class="caption" style="padding:0px;">
+                        <h5 class="text-center">日报</h5>
+                    </div>
+                </a>
+            </div>-->
+            <div class="col-xs-3" >
+                <a class="thumbnail" href="../daily/dailyList.html" target="_blank" style="margin-bottom: 0px; background-color: #00000000; border: 0px solid #ddd;">
+                    <img src="../img/app/icon_daily_cal.png" class="img-responsive">
+                    <div class="caption" style="padding:0px;">
+                        <h5 class="text-center">我的日报</h5>
+                    </div>
+                </a>
+            </div>
+            <!--<div class="col-xs-3">-->
+                <!--<a class="thumbnail" href="../project/myProjectList.html" target="_blank" style="margin-bottom: 0px; background-color: #00000000; border: 0px solid #ddd;">-->
+                    <!--<img src="../img/app/icon_pro_list.png" class="img-responsive">-->
+                    <!--<div class="caption" style="padding:0px;">-->
+                        <!--<h5 class="text-center">我的项目</h5>-->
+                    <!--</div>-->
+                <!--</a>-->
+            <!--</div>-->
+            <div class="col-xs-3" >
+                <a class="thumbnail" href="../sell/myVisitList.html" target="_blank" style="margin-bottom: 0px; background-color: #00000000; border: 0px solid #ddd;">
+                    <img src="../img/app/icon_cloud_share.png" class="img-responsive">
+                    <div class="caption" style="padding:0px;">
+                        <h5 class="text-center">客户拜访</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="col-xs-3" >
+                <a class="thumbnail" href="../daily/dailyApproval.html" target="_blank" style="margin-bottom: 0px; background-color: #00000000; border: 0px solid #ddd;">
+                    <img src="../img/app/icon_approval.png" class="img-responsive">
+                    <div class="caption" style="padding:0px;">
+                        <h5 class="text-center">日报审批</h5>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+
+        <div class="row" style="margin-left: 0px;margin-right: 0px;">
+            <div class="col-xs-12" style="border-bottom: 1px solid #ddd; padding-left: 0px;">
+                <h4><strong>人事</strong></h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3" >
+                <a class="thumbnail" href="../hr/accountCreate.html" target="_blank" style="margin-bottom: 0px; background-color: #00000000; border: 0px solid #ddd;">
+                    <img src="../img/app/icon_hr_account.png" class="img-responsive">
+                    <div class="caption" style="padding:0px;">
+                        <h5 class="text-center">开通账号</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="col-xs-3" >
+                <a class="thumbnail" href="../hr/joinApply.html" target="_blank" style="margin-bottom: 0px; background-color: #00000000; border: 0px solid #ddd;">
+                    <img src="../img/app/icon_hr_join.png" class="img-responsive">
+                    <div class="caption" style="padding:0px;">
+                        <h5 class="text-center">转正</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="col-xs-3" >
+                <a class="thumbnail" href="../hr/leaveApply.html" target="_blank" style="margin-bottom: 0px; background-color: #00000000; border: 0px solid #ddd;">
+                    <img src="../img/app/icon_hr_leave.png" class="img-responsive">
+                    <div class="caption" style="padding:0px;">
+                        <h5 class="text-center">离职申请</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="col-xs-3" >
+                <a class="thumbnail" href="../hr/leaveHandover.html" target="_blank" style="margin-bottom: 0px; background-color: #00000000; border: 0px solid #ddd;">
+                    <img src="../img/app/icon_hr_hander.png" class="img-responsive">
+                    <div class="caption" style="padding:0px;">
+                        <h5 class="text-center">离职交接</h5>
+                    </div>
+                </a>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-xs-3" >
+                <a class="thumbnail" href="../hr/postAdjustmentApply.html" target="_blank" style="margin-bottom: 0px; background-color: #00000000; border: 0px solid #ddd;">
+                    <img src="../img/app/icon_hr_postadjust.png" class="img-responsive">
+                    <div class="caption" style="padding:0px;">
+                        <h5 class="text-center">调岗</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="col-xs-3" >
+                <a class="thumbnail" href="../hr/macSubsidyApply.html" target="_blank" style="margin-bottom: 0px; background-color: #00000000; border: 0px solid #ddd;">
+                    <img src="../img/app/icon_hr_mac.png" class="img-responsive">
+                    <div class="caption" style="padding:0px;">
+                        <h5 class="text-center">婚育津贴</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="col-xs-3 " >
+                <a class="thumbnail" href="../hr/visitSubsidyApply.html" target="_blank" style="margin-bottom: 0px; background-color: #00000000; border: 0px solid #ddd;">
+                    <img src="../img/app/icon_hr_visit_subsidy.png" class="img-responsive">
+                    <div class="caption" style="padding:0px;">
+                        <h5 class="text-center">探亲补助</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="col-xs-3" >
+                <a class="thumbnail" href="../hr/hrApproval.html" target="_blank" style="margin-bottom: 0px; background-color: #00000000; border: 0px solid #ddd;">
+                    <img src="../img/app/icon_approval.png" class="img-responsive">
+                    <div class="caption" style="padding:0px;">
+                        <h5 class="text-center">审批</h5>
+                    </div>
+                </a>
+                <span class="badge" v-if="myTodoCntMap.hr_cnt!=0">{{myTodoCntMap.hr_cnt}}</span>
+            </div>
+
+        </div>
+
+        <div class="row" style="margin-left: 0px;margin-right: 0px;">
+            <div class="col-xs-12" style="border-bottom: 1px solid #ddd; padding-left: 0px;">
+                <h4><strong>行政</strong></h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3" >
+                <a class="thumbnail" href="../adm/sealApply.html" target="_blank" style="margin-bottom: 0px; background-color: #00000000; border: 0px solid #ddd;">
+                    <img src="../img/app/icon_adm_seal.png" class="img-responsive">
+                    <div class="caption" style="padding:0px;">
+                        <h5 class="text-center">印章</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="col-xs-3" >
+                <a class="thumbnail" href="../adm/cardApply.html" target="_blank" style="margin-bottom: 0px; background-color: #00000000; border: 0px solid #ddd;">
+                    <img src="../img/app/icon_adm_card.png" class="img-responsive">
+                    <div class="caption" style="padding:0px;">
+                        <h5 class="text-center">名片</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="col-xs-3" >
+                <a class="thumbnail" href="../adm/passengerTicketApply.html" target="_blank" style="margin-bottom: 0px; background-color: #00000000; border: 0px solid #ddd;">
+                    <img src="../img/app/icon_adm_pass.png" class="img-responsive">
+                    <div class="caption" style="padding:0px;">
+                        <h5 class="text-center">机票</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="col-xs-3" >
+                <a class="thumbnail" href="../adm/admApproval.html" target="_blank" style="margin-bottom: 0px; background-color: #00000000; border: 0px solid #ddd;">
+                    <img src="../img/app/icon_approval.png" class="img-responsive">
+                    <div class="caption" style="padding:0px;">
+                        <h5 class="text-center">审批</h5>
+                    </div>
+                </a>
+                <span class="badge" v-if="myTodoCntMap.adm_cnt!=0">{{myTodoCntMap.adm_cnt}}</span>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+<script src="../js/common/includeCommonScript.js"></script>
+
+<script>document.write('<script src="../js/modules/work/workIndex.js?t=' + globalJsVer + '"><\/script>')</script>
+
+<script>
+    $(function () {
+
+    });
+
+</script>
+
+</body>
+</html>

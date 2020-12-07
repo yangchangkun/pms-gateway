@@ -1,0 +1,20 @@
+package com.pms.rules.workflow.cc
+
+import com.pms.drools.domain.WorkflowCcBean;
+
+/*
+* 人事审批-伯乐奖金-抄送规则
+*/
+rule "hr_bole_bonus_cc_drools_1"
+    no-loop true
+    lock-on-active true
+    salience 0
+    when
+        $workflowCc : WorkflowCcBean(businessType == "hr_bole_bonus")
+    then
+        System.out.println("hr_bole_bonus_cc_drools_1 命中");
+        $workflowCc.setCcAccounts("wuxiaoming,wangshaojing,gaoleiming,zhangxue");
+        $workflowCc.setCcRoleCodes("pm,pd,dm");
+end
+
+

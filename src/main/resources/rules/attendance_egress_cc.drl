@@ -1,0 +1,30 @@
+package com.pms.rules.workflow.cc
+
+import com.pms.drools.domain.WorkflowCcBean;
+
+/*
+* 考勤审批-外出-抄送规则
+*/
+rule "attendance_egress_cc_drools_1"
+    no-loop true
+    lock-on-active true
+    salience 300
+    when
+        $workflowCc : WorkflowCcBean(businessType == "attendance_egress" && (account == "yuanxingyu" || account == "wuxiaoming" || account == "shenqi" || account == "wengguohai" || account == "yaoxianyou" || account == "mayingchun" || account == "zhengchengbin"))
+    then
+        System.out.println("attendance_egress_cc_drools_1 命中");
+        $workflowCc.setCcAccounts("wengguohai,huajianhe");
+end
+
+rule "attendance_egress_cc_drools_2"
+    no-loop true
+    lock-on-active true
+    salience 2
+    when
+        $workflowCc : WorkflowCcBean(businessType == "attendance_egress" && (account != "yuanxingyu" && account != "wuxiaoming" && account != "shenqi" && account != "wengguohai" && account != "yaoxianyou" && account != "mayingchun" && account != "zhengchengbin"))
+    then
+        System.out.println("attendance_egress_cc_drools_2 命中");
+        $workflowCc.setCcRoleCodes("pm,pd,dm");
+end
+
+

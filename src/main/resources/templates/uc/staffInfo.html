@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+    <!-- 相对上面的设置，该配置可禁止页面被手势放大和缩小 -->
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover"  />
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+
+    <meta name='apple-mobile-web-app-capable' content='yes' />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <meta name='full-screen' content='true' />
+    <meta name='x5-fullscreen' content='true' />
+    <meta name='360-fullscreen' content='true' />
+
+    <title>数字化管理平台</title>
+
+    <meta name="keywords" content="数字化 管理平台">
+    <meta name="description" content="数字化 管理平台">
+
+    <script src="../js/common/includeCommonCss.js"></script>
+
+    <style>
+        body {
+            /*
+            * 注意，container_content 如果不自适应，则body需要内补一个边距，边距=container_footer的高度
+             */
+            padding-top: 46px;
+        }
+
+
+    </style>
+</head>
+<body class="gray-bg">
+<div id="vueApp" class="container-fluid" v-cloak>
+    <!-- 固定头部 begin -->
+    <div class="navbar-fixed-top">
+        <div class="row bg-primary">
+            <div class="col-xs-2">
+                <a class="btn btn-lg btn-trans btn-block  show"  onclick="onBackClick()();"><i class="fa fa-chevron-left"></i></a>
+            </div>
+            <div class="col-xs-8 text-center">
+                <span class="header-title">个人信息</span>
+            </div>
+            <div class="col-xs-2">
+                <a class="btn btn-lg btn-trans btn-block  hidden" ><i class="fa fa-chevron-right"></i></a>
+            </div>
+        </div>
+    </div>
+    <!-- 固定头部 end -->
+
+    <div class="row" style="margin-top: 15px;">
+        <div class="col-xs-12">
+            <div class="btn-group btn-group-justified" role="group">
+                <div class="btn-group " role="group">
+                    <button type="button" class="btn btn-success" @click="toStep1">1、资料</button>
+                </div>
+                <div class="btn-group " role="group">
+                    <button type="button" class="btn btn-primary" @click="toStep2">2、学历</button>
+                </div>
+                <div class="btn-group " role="group">
+                    <button type="button" class="btn btn-info"  @click="toStep3">3、证照</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 个人信息 begin -->
+    <div class="row" style="margin-top: 15px;">
+        <div class="col-xs-12">
+
+            <!-- 第一步 begin -->
+            <div v-show="stepTag==1">
+                <div class="list-group white-bg">
+                    <div class="list-group-item">
+                        <div class="form-group">
+                            <label class="control-label">姓名<span style="color: #ff0000;">*</span></label>
+                            <input type="text" class="form-control" v-model="staff.name" placeholder="姓名" maxlength="128">
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="form-group">
+                            <label class="control-label">性别<span style="color: #ff0000;">*</span></label>
+                            <select class="form-control" v-model="staff.sex" >
+                                <!--<option value="">请选择性别</option>-->
+                                <option value="0">男</option>
+                                <option value="1">女</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="form-group">
+                            <label class="control-label">联系电话</label>
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-phone"></i>
+                                </div>
+                                <input type="text" class="form-control" v-model="user.phonenumber" placeholder="联系电话"
+                                       maxlength="11"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="form-group">
+                            <label class="control-label">出生日期<span style="color: #ff0000;">*</span></label>
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input type="text" class="form-control" v-model="staff.birthday" readonly="readonly" placeholder="请选择出生日期"
+                                       @click="datePickerChange($event, 'yyyy-MM-dd', 'staff.birthday', '');"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="form-group">
+                            <label class="control-label">政治面貌<span style="color: #ff0000;">*</span></label>
+                            <select class="form-control" v-model="staff.politicCountenance" >
+                                <option value="">请选择政治面貌</option>
+                                <option value="中共党员（含预备）">中共党员（含预备）</option>
+                                <option value="团员">团员</option>
+                                <option value="群众">群众</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="form-group">
+                            <label class="control-label">婚姻状况<span style="color: #ff0000;">*</span></label>
+                            <select class="form-control" v-model="staff.maritalStatus" >
+                                <!--<option value="">请选择婚姻状况</option>-->
+                                <option value="已婚">已婚</option>
+                                <option value="未婚">未婚</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="form-group">
+                            <label class="control-label">生育状况<span style="color: #ff0000;">*</span></label>
+                            <select class="form-control" v-model="staff.fertilityStatus" >
+                                <!--<option value="">请选择生育状况</option>-->
+                                <option value="已育">已育</option>
+                                <option value="未育">未育</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="form-group">
+                            <label class="control-label">户籍类型<span style="color: #ff0000;">*</span></label>
+                            <select class="form-control" v-model="staff.icType" >
+                                <!--<option value="">请选择户籍类型</option>-->
+                                <option value="本地农业">本地农业</option>
+                                <option value="本地城镇">本地城镇</option>
+                                <option value="外地城镇">外地城镇</option>
+                                <option value="外地农业">外地农业</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="form-group">
+                            <label class="control-label">身份证号码<span style="color: #ff0000;">*</span></label>
+                            <input type="text" class="form-control" v-model="staff.icNum" placeholder="身份证号码" maxlength="20">
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="form-group">
+                            <label class="control-label">户籍地址<span style="color: #ff0000;">*</span></label>
+                            <input type="text" class="form-control" v-model="staff.icAddress" placeholder="户籍地址" maxlength="128">
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="form-group">
+                            <label class="control-label">现住址<span style="color: #ff0000;">*</span></label>
+                            <input type="text" class="form-control" v-model="staff.residence" placeholder="现住址" maxlength="128">
+                        </div>
+                    </div>
+
+                    <div class="list-group-item">
+                        <div class="form-group">
+                            <label class="control-label">工资卡号<span style="color: #ff0000;">*</span></label>
+                            <input type="text" class="form-control" v-model="staff.insureAccount" placeholder="工资卡号" maxlength="50">
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="form-group">
+                            <label class="control-label">工资卡开户行<span style="color: #ff0000;">*</span></label>
+                            <input type="text" class="form-control" v-model="staff.insureBank" placeholder="XX省XX市XX银行XX支行" maxlength="50">
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="form-group">
+                            <label class="control-label">社保缴纳地<span style="color: #ff0000;">*</span></label>
+                            <select class="form-control" v-model="staff.insureAddr" >
+                                <!--<option value="">请选择户籍类型</option>-->
+                                <option value="北京">北京</option>
+                                <option value="成都">成都</option>
+                                <option value="佛山">佛山</option>
+                                <option value="广州代缴">广州代缴</option>
+                                <option value="洛阳">洛阳</option>
+                                <option value="南京">南京</option>
+                                <option value="上海">上海</option>
+                                <option value="深圳">深圳</option>
+                                <option value="实习无">实习无</option>
+                                <option value="天津">天津</option>
+                                <option value="外包">外包</option>
+                                <option value="无">无</option>
+                                <option value="银川">银川</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="form-group">
+                            <label class="control-label">紧急联系人姓名<span style="color: #ff0000;">*</span></label>
+                            <input type="text" class="form-control" v-model="staff.linkName" placeholder="紧急联系人姓名" maxlength="20">
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="form-group">
+                            <label class="control-label">紧急联系人电话<span style="color: #ff0000;">*</span></label>
+                            <input type="text" class="form-control" v-model="staff.linkPhone" placeholder="紧急联系人电话" maxlength="20">
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="form-group">
+                            <label class="control-label">紧急联系人关系<span style="color: #ff0000;">*</span></label>
+                            <input type="text" class="form-control" v-model="staff.linkRelation" placeholder="紧急联系人关系" maxlength="10">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 第一步 end -->
+
+            <!-- 第二步 begin -->
+            <div v-show="stepTag==2">
+                <div class="list-group white-bg">
+                    <div class="list-group-item">
+                        <div class="form-group">
+                            <label class="control-label">最高学历类型<span style="color: #ff0000;">*</span></label>
+                            <select class="form-control" v-model="staff.eduType" >
+                                <option value="">其它</option>
+                                <option value="博士">博士</option>
+                                <option value="硕士">硕士</option>
+                                <option value="本科">本科</option>
+                                <option value="大专">大专</option>
+                                <option value="高中">高中</option>
+                                <option value="中专">中专</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="form-group">
+                            <label class="control-label">毕业院校<span style="color: #ff0000;">*</span></label>
+                            <input type="text" class="form-control" v-model="staff.eduSchool" placeholder="毕业院校" maxlength="128">
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="form-group">
+                            <label class="control-label">所学专业<span style="color: #ff0000;">*</span></label>
+                            <input type="text" class="form-control" v-model="staff.eduMajor" placeholder="所学专业" maxlength="128">
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="form-group">
+                            <label class="control-label">毕业日期<span style="color: #ff0000;">*</span></label>
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input type="text" class="form-control" v-model="staff.eduDate" readonly="readonly" placeholder="请选择毕业日期"
+                                       @click="datePickerChange($event, 'yyyy-MM', 'staff.eduDate', '');"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="form-group">
+                            <label class="control-label">参加工作时间<span style="color: #ff0000;">*以开始缴纳社保时间为准</span></label>
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input type="text" class="form-control" v-model="staff.workBeginDate" readonly="readonly" placeholder="请选择参加工作时间"
+                                       @click="datePickerChange($event, 'yyyy-MM', 'staff.workBeginDate', '');"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 第二步 end -->
+
+            <!-- 第三步 begin -->
+            <div v-show="stepTag==3">
+                <div class="row">
+                    <div class="col-xs-6">
+                        <div class="thumbnail" id="uploadPhotoIcFront">
+                            <img :src="photoHandler(staff.photoIcFront)" style="height: 120px;width: 100%;">
+                            <div class="caption">
+                                <p>身份证人像面</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="thumbnail" id="uploadPhotoIcVerso">
+                            <img :src="photoHandler(staff.photoIcVerso)" style="height: 120px;width: 100%;">
+                            <div class="caption">
+                                <p>身份证国徽面</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="thumbnail" id="uploadPhotoDegree">
+                            <img :src="photoHandler(staff.photoDegree)" style="height: 120px;width: 100%;">
+                            <div class="caption">
+                                <p>学位证书</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="thumbnail" id="uploadPhotoEducation">
+                            <img :src="photoHandler(staff.photoEducation)" style="height: 120px;width: 100%;">
+                            <div class="caption">
+                                <p>学历证书</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="padding-bottom: 15px;">
+                    <div class="col-xs-2">
+                    </div>
+                    <div class="col-xs-8">
+                        <button type="button" class="btn btn-primary btn-block" @click="saveInfo">提交</button>
+                    </div>
+                    <div class="col-xs-2">
+                    </div>
+                </div>
+            </div>
+            <!-- 第三步 end -->
+
+        </div>
+    </div>
+    <!-- 个人信息 end -->
+
+</div>
+
+
+<script src="../js/common/includeCommonScript.js"></script>
+
+<script>document.write('<script src="../js/modules/uc/staffInfo.js?t=' + globalJsVer + '"><\/script>')</script>
+
+<script>
+    $(function () {
+        initFileUpload();
+    });
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+    <!-- 相对上面的设置，该配置可禁止页面被手势放大和缩小 -->
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover"  />
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+
+    <meta name='apple-mobile-web-app-capable' content='yes' />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <meta name='full-screen' content='true' />
+    <meta name='x5-fullscreen' content='true' />
+    <meta name='360-fullscreen' content='true' />
+
+    <title>数字化管理平台</title>
+
+    <meta name="keywords" content="数字化 管理平台">
+    <meta name="description" content="数字化 管理平台">
+
+    <script src="../js/common/includeCommonCss.js"></script>
+
+    <style>
+        body {
+            /*
+            * 注意，container_content 如果不自适应，则body需要内补一个边距，边距=container_footer的高度
+             */
+            padding-top: 46px;
+        }
+
+
+    </style>
+</head>
+<body class="gray-bg">
+<div id="vueApp" class="container-fluid" v-cloak>
+    <!-- 固定头部 begin -->
+    <div class="navbar-fixed-top">
+        <div class="row bg-primary">
+            <div class="col-xs-3">
+                <a class="btn btn-lg btn-trans btn-block  show"  onclick="onBackClick()();"><i class="fa fa-chevron-left"></i></a>
+            </div>
+            <div class="col-xs-6 text-center">
+                <span class="header-title">印章申请记录</span>
+            </div>
+            <div class="col-xs-3">
+                <a class="btn btn-lg btn-trans btn-block show" @click="queryList(1)"><i class="fa fa-refresh"></i> &nbsp;</a>
+            </div>
+        </div>
+    </div>
+    <!-- 固定头部 end -->
+
+
+    <!-- 内容布局 begin -->
+    <div class="row" >
+        <div class="col-xs-12" style="padding: 0px;">
+            <div class="list-group white-bg">
+                <div class="list-group-item" v-for="(obj, index) in gridDatas">
+
+                    <div class="media" @click="toDetail(obj.id)">
+                        <div class="media-body">
+                            <h4 class="media-heading">使用人:{{obj.useUserName}}</h4>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <p><i class="fa fa-user"></i>&nbsp;申请人:{{obj.applyUserName}}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-9">
+                                    <p><i class="fa fa-file"></i>&nbsp;文件名:{{obj.fileName}}</p>
+                                </div>
+                                <div class="col-xs-3 text-right">
+                                    <p><i class="fa fa-tag"></i>&nbsp;{{obj.fileQuantity}}(份)</p>
+                                </div>
+                            </div>
+                            <div class="row" v-if="obj.sealUseType=='1'">
+                                <div class="col-xs-5 text-left">
+                                    <p>{{obj.borrowDate}}(借)</p>
+                                </div>
+                                <div class="col-xs-2 text-center">
+                                    <p>-</p>
+                                </div>
+                                <div class="col-xs-5 text-right">
+                                    <p>{{obj.revertDate}}(还)</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-9">
+                                    <div class="pull-left">
+                                        <p><i class="fa fa-clock-o"></i>&nbsp;{{obj.applyDate}}</p>
+                                    </div>
+                                    <div class="btn-group pull-right">
+                                        <button class="btn btn-primary btn-xs" v-if="obj.fileCategory=='0'">销售类</button>
+                                        <button class="btn btn-primary btn-xs" v-if="obj.fileCategory=='1'">行政类</button>
+                                        <button class="btn btn-primary btn-xs" v-if="obj.fileCategory=='2'">人事(离职)类</button>
+                                        <button class="btn btn-primary btn-xs" v-if="obj.fileCategory=='3'">人事(一般)类</button>
+
+                                        <button class="btn btn-success btn-xs" v-if="obj.sealCategory=='0'">公章</button>
+                                        <button class="btn btn-success btn-xs" v-if="obj.sealCategory=='1'">合同章</button>
+                                        <button class="btn btn-success btn-xs" v-if="obj.sealCategory=='2'">法人章</button>
+
+                                        <button class="btn btn-warning btn-xs" v-show="obj.sealUseType=='0'">盖章</button>
+                                        <button class="btn btn-warning btn-xs" v-show="obj.sealUseType=='1'">外带</button>
+                                    </div>
+                                </div>
+                                <div class="col-xs-3 text-right">
+                                    <span class="label label-primary" v-if="obj.state=='0'">审批中</span>
+                                    <span class="label label-danger" v-show="obj.state=='1'">驳回</span>
+                                    <span class="label label-success" v-show="obj.state=='2'">确认</span>
+                                    <span class="label label-default" v-show="obj.state=='3'">撤销</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="list-group-item" v-if="gridDatas==null || gridDatas.length<=0">
+                    <p class="text-center">暂无数据</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- 内容布局 end -->
+
+    <!-- 分页布局 begin -->
+    <div class="row">
+        <div class="col-xs-12">
+            <ul class="pager">
+                <li><a   v-if="webPage.pages>1" @click="queryList(1)">首页</a></li>
+                <li><a   v-if="webPage.hasPreviousPage" @click="queryList(webPage.prePage)">上一页</a></li>
+                <!--<li v-for="page in webPage.navigatepageNums">
+                    <a   @click="queryList(page)">{{page}}</a>
+                </li>-->
+                <li><a   v-if="webPage.hasNextPage" @click="queryList(webPage.nextPage)">下一页</a></li>
+                <li><a   v-if="webPage.pages>1" @click="queryList(webPage.pages)">尾页</a></li>
+            </ul>
+        </div>
+    </div>
+    <!-- 分页布局 end -->
+
+
+</div>
+
+
+<script src="../js/common/includeCommonScript.js"></script>
+
+<script>document.write('<script src="../js/modules/adm/sealList.js?t=' + globalJsVer + '"><\/script>')</script>
+
+<script>
+    $(function () {
+
+    });
+
+</script>
+
+</body>
+</html>

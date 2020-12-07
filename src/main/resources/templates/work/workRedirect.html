@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+
+    <meta name='apple-mobile-web-app-capable' content='yes' />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <meta name='full-screen' content='true' />
+    <meta name='x5-fullscreen' content='true' />
+    <meta name='360-fullscreen' content='true' />
+
+    <title>数字化管理平台</title>
+
+    <meta name="keywords" content="数字化 管理平台">
+    <meta name="description" content="数字化 管理平台">
+
+    <style>
+
+    </style>
+</head>
+<body >
+
+
+
+<!-- 全局js -->
+<!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+<script src="../js/framework/jquery.min.js"></script>
+
+<script src="../js/libs/localStorageUtils.js"></script>
+
+<script src="../js/libs/function.js"></script>
+
+<script>
+    $(function () {
+        var urlParams = getQueryString();
+        console.log("urlParams="+JSON.stringify(urlParams));
+        var module = urlParams.module;
+        var token = urlParams.token;
+        var businessId = urlParams.businessId;
+        var userId = urlParams.userId;
+        toRedirect(module, token, businessId,userId);
+    });
+
+
+    function toRedirect(module, token, businessId, userId) {
+        console.log("module="+module);
+        console.log("token="+token);
+        console.log("businessId="+businessId);
+        console.log("userId="+userId);
+
+        if(!isBlank(token)){
+            myStorage.setToken(token);
+        }
+
+        var url = "/pms/";
+        if(module=='todo'){
+            url += 'activiti/activitiHome.html';
+        } else if(module=='cloudDisk'){
+            url += 'cloudDisk/cloudDisk.html';
+        } else if(module=='noticeList'){
+            url += 'notice/noticeList.html';
+        } else if(module=='attendReport'){
+            url += 'attendance/attendReport.html';
+        } else if(module=='supplementApply'){
+            url += 'attendance/supplementApply.html';
+        } else if(module=='overTimeApply'){
+            url += 'attendance/overTimeApply.html';
+        } else if(module=='leaveApply'){
+            url += 'attendance/leaveApply.html';
+        } else if(module=='travelApply'){
+            url += 'attendance/travelApply.html';
+        } else if(module=='egressApply'){
+            url += 'attendance/egressApply.html';
+        } else if(module=='attendApproval'){
+            url += 'attendance/attendApproval.html';
+        } else if(module=='dailyList'){
+            url += 'daily/dailyList.html';
+        } else if(module=='dailyApproval'){
+            url += 'daily/dailyApproval.html';
+        } else if(module=='customerVisit'){
+            url += 'sell/myVisitList.html';
+        } else if(module=='accountCreate'){
+            url += 'hr/accountCreate.html';
+        } else if(module=='joinApply'){
+            url += 'hr/joinApply.html';
+        } else if(module=='hrLeaveApply'){
+            url += 'hr/leaveApply.html';
+        } else if(module=='leaveHandover'){
+            url += 'hr/leaveHandover.html';
+        } else if(module=='postAdjustmentApply'){
+            url += 'hr/postAdjustmentApply.html';
+        } else if(module=='macSubsidyApply'){
+            url += 'hr/macSubsidyApply.html';
+        } else if(module=='visitSubsidyApply'){
+            url += 'hr/visitSubsidyApply.html';
+        } else if(module=='hrApproval'){
+            url += 'hr/hrApproval.html';
+        } else if(module=='sealApply'){
+            url += 'adm/sealApply.html';
+        } else if(module=='cardApply'){
+            url += 'adm/cardApply.html';
+        } else if(module=='passengerTicketApply'){
+            url += 'adm/passengerTicketApply.html';
+        } else if(module=='admApproval'){
+            url += 'adm/admApproval.html';
+        } else if(module=='supplementDetail'){
+            url += "attendance/supplementDetail.html?id=" + businessId;
+
+        } else if(module=='overTimeDetail'){
+            url += "attendance/overTimeDetail.html?id=" + businessId;
+
+        } else if(module=='leaveDetail'){
+            url += "attendance/leaveDetail.html?id=" + businessId;
+
+        } else if(module=='travelDetail'){
+            url += "attendance/travelDetail.html?id=" + businessId;
+
+        } else if(module=='egressDetail'){
+            url += "attendance/egressDetail.html?id=" + businessId;
+
+        } else if(module=='joinDetail'){
+            url += "hr/joinApplyDetail.html?id=" + businessId;
+
+        } else if(module=='hrLeaveDetail'){
+            url += "hr/leaveApplyDetail.html?id=" + businessId;
+
+        } else if(module=='leaveHandoverDetail'){
+            url += "hr/leaveHandoverDetail.html?id=" + businessId;
+
+        } else if(module=='postAdjustmentDetail'){
+            url += "hr/postAdjustmentDetail.html?id=" + businessId;
+
+        } else if(module=='macSubsidyDetail'){
+            url += "hr/macSubsidyDetail.html?id=" + businessId;
+
+        } else if(module=='visitSubsidyDetail'){
+            url += "hr/visitSubsidyDetail.html?id=" + businessId;
+
+        } else if(module=='boleBonusDetail'){
+            url += "hr/boleBonusDetail.html?id=" + businessId;
+
+        } else if(module=='sealDetail'){
+            url += "adm/sealDetail.html?id=" + businessId;
+
+        } else if(module=='cardDetail'){
+            url += "adm/cardDetail.html?id=" + businessId;
+
+        } else if(module=='passengerTicketDetail'){
+            url += "adm/passengerTicketDetail.html?id=" + businessId;
+
+        } else if(module=='shop'){
+            url += "shop/goods/goodsHome.html";
+        } else if(module=='staffArchives'){
+            url += "uc/staffArchives.html?userId="+userId;
+        }
+        //跳转
+        window.location.href = url;
+        /**
+         * 如果不希望页面刷新可以设置下面的参数
+         */
+        //location.reload(false);
+    }
+
+</script>
+
+</body>
+</html>
